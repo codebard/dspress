@@ -24,47 +24,46 @@ else
 	
 ?>
 
-
-
 <div class="<?php echo $this->internal['prefix'];?>settings">
 
 
-	<div style="font-size:175%;font-weight:bold;margin-top:30px;display:inline-table;width:100%;">Great! Patreon Button & Plugin by <a href="http://codebard.com" target="_blank"><img src="<?php echo $this->internal['plugin_url']; ?>images/codebard_very_small.png"></a> is now ready!</div>
+	<div style="font-size:175%;font-weight:bold;margin-top:30px;display:inline-table;width:100%;">Great! Buy Button & Widgets For BitClout, DiamondApp and DeSo is now ready!</div>
 
 	
 	<div style="font-size:150%;font-weight:bold;margin-top:30px;margin-bottom:15px;display:inline-table;width:100%;">Now if you wish, you can: 
 <br><br> <a href="<?php echo $this->internal['admin_url']; ?>widgets.php" target="_blank">Put Patreon Widgets to your Sidebar</a>
-<br><br> <a href="<?php echo $this->internal['admin_url'].'admin.php?page=settings_'.$this->internal['id']; ?>" target="_blank">Customize Your Buttons, Button Messages and their features</a>
-<br><br> <a href="<?php echo $this->internal['admin_url'].'admin.php?page=settings_'.$this->internal['id']; ?>&<?php echo $this->internal['prefix'];?>tab=extras" target="_blank">Check out Extras</a></div>
+<br><br> <a href="<?php echo $this->internal['admin_url'].'admin.php?page=settings_'.$this->internal['id']; ?>" target="_blank">Customize Your Buttons, Button Messages and their features</a></div>
 
-	<div style="font-size:200%;font-weight:bold;margin-top:10px;margin-bottom:15px;display:inline-table;width:100%;line-height: 1;">And, Upgrade to Patron Plugin Pro to get most out of your Patreon and increase your pledges!</div>
-	<div style="font-size:150%;font-weight:bold;margin-top:0px;margin-bottom:15px;display:inline-table;width:100%;line-height: 1;">
-	Our new plugin, Patron Plugin Pro integrates your WordPress and Patreon tightly and allows you to make Patron-only posts. Post Patron-only content to your own website and get pledges from your users! Have your users login with Patreon. Have your "Be a Patron" buttons send users directly to Patron Pipeline and increase your conversions! Put up customizable "Patron only" notifications for any protected content to get more Patrons!
+	<div style="font-size:150%;font-weight:bold;margin-top:10px;margin-bottom:15px;display:inline-table;width:100%;line-height: 1;">And, subscribe to BitClout / DiamondApp / DeSo WordPress Plugins Newsletter!</div>
+	<div style="font-size:125%;font-weight:bold;margin-top:0px;margin-bottom:15px;display:inline-table;width:100%;line-height: 1;">
+	Keep up-to-date with BitClout / DiamondApp / DeSo related WordPress news, new DeSo plugins, and receive tips & tricks to boost your DeSo profile!
 	</div>
 	<div style="font-size:150%;font-weight:bold;margin-top:0px;margin-bottom:15px;display:inline-table;width:100%;line-height: 1;">
-		<ul>
-			<li>- Mark any content Patron-only with a single click</li>
-			<li>- Make parts of your content Patron-only with a single button click</li>
-			<li>- Make any post type Patron-only easily</li>
-			<li>- Designate your entire website as Patron-only</li>
-			<li>- Show customizable notifications for Patron-only content</li>
-			<li>- Protect excerpts in listings so protected posts will not be visible in excerpts</li>
-			<li>- Use a custom banner for any single post of any type</li>
-			<li>- Send your visitors directly to Patron Pipeline to gain new patrons</li>
-			<li>- Have your users log into your WordPress with Patreon</li>
-			<li>- Designate a specific Pledge amount to be able to view a post</li>
-		</ul>
+<!-- Begin Mailchimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7_dtp.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; width:100%;}
+	/* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup" style="max-width:500px; width: 100%;">
+<form action="https://codebard.us9.list-manage.com/subscribe/post?u=5afbc1be9f2ed76070f4b64fd&amp;id=6dd31e714b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<br><br>
+	<input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
+    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_5afbc1be9f2ed76070f4b64fd_6dd31e714b" tabindex="-1" value=""></div>
+        <div class="clear foot">
+           <input type="submit" value="Subscribe Now!" name="subscribe" id="mc-embedded-subscribe" class="button" style="background-color: #479900;">
+        </div>
+	<p><a href="http://eepurl.com/hO41f9" title="Mailchimp - email marketing made easy and fun"><img class="referralBadge" src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a></p>
+    </div>
+</form>
+</div>
+
+<!--End mc_embed_signup-->
 	</div>
 
-	<div style="font-size:175%;font-weight:bold;margin-top:0px;margin-bottom:15px;display:inline-table;width:100%;"> <a href="https://codebard.com/patron-plugin-pro" target="_blank">Click here to Get going in 15 minutes</a> and increase your income!</div>
-
-		
-
-		
-	
-<?php
-
-?>
 
 <?php
 }

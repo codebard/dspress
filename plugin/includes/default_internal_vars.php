@@ -7,11 +7,11 @@ $this->internal = array_replace_recursive(
 	
 	array(
 		
-		'id' => 'cb_p6',
+		'id' => 'cb_p8',
 		'plugin_id' => 'patron-button-and-widgets-by-codebard',
-		'prefix' => 'cb_p6_',
-		'version' => '2.1.2',
-		'plugin_name' => 'Patreon Button, Widgets and Plugin by CodeBard',
+		'prefix' => 'cb_p8_',
+		'version' => '1.0.0',
+		'plugin_name' => 'Buy Button & Widgets For BitClout, DiamondApp and DeSo',
 		
 		'callable_from_request' => array(
 			
@@ -81,11 +81,6 @@ $this->internal = array_replace_recursive(
 				
 				
 			),
-			'extras'=>array(
-				
-			
-				
-			),
 			'support'=>array(
 				
 				
@@ -97,15 +92,6 @@ $this->internal = array_replace_recursive(
 		
 		'addons' => array(
 		
-			'patron_plugin_pro' => array(
-			
-				'title' => 'Patron Plugin Pro',
-				'icon' => 'patron_plugin_pro.png',		
-				'link' => 'https://codebard.com/patron-plugin-pro',		
-				'slug' => 'patron-plugin-pro/index.php',		
-				'class_name' => 'cb_p6_a1',		
-			
-			),
 		
 		
 		

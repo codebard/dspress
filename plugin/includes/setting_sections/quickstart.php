@@ -71,13 +71,13 @@ echo $this->do_admin_settings_form_header($tab);
 		
 		
 ?>
-			<h3>Site's Patreon user</h3>
-			If you chose not to use Patreon accounts of Authors, or an Author does not have any Patreon username saved in his/her author profile page, this Patreon username will be used for Buttons for users to support in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author Patreon sidebar widget</b>.<br><br>
+			<h3>Site's BitClout / DiamondApp / DeSo Node profile link</h3>
+			If you chose not to use profile links of Authors for each author, or an Author does not have any profile link saved in his/her author profile page, this profile link will be used for Buttons for users in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author sidebar widget</b>.<br><br>
 			<input type="text" style="width : 500px" name="opt[<?php echo $tab; ?>][site_account]" value="<?php echo $this->opt[$tab]['site_account']; ?>">
 			
 			
 			<h3>Open pages in new window?</h3>
-			If 'Yes', Your Patreon Profile will be opened in a new window when users click your Patreon Buttons.
+			If 'Yes', Your Patreon Profile will be opened in a new window when users click your Buy Buttons.
 			
 			<br><br>
 			Yes <input type="radio" name="opt[<?php echo $tab; ?>][open_new_window]" value="yes"<?php echo $open_new_window_checked_yes; ?>>
@@ -86,20 +86,14 @@ echo $this->do_admin_settings_form_header($tab);
 			
 			
 			<h3>Force Site Button instead of Author</h3>
-			If 'Yes', Site's own Patreon account will be used for <b>Buttons under Posts</b> and <b>Author Patreon sidebar widget</b> instead of Authors' own accounts.
+			If 'Yes', Site's own profile will be used for <b>Buttons under Posts</b> and <b>Author Buy sidebar widget</b> instead of Authors' own profile.
 			
 			<br><br>
 			Yes <input type="radio" name="opt[<?php echo $tab; ?>][force_site_button]" value="yes"<?php echo $force_site_checked_yes; ?>>
 			No <input type="radio" name="opt[<?php echo $tab; ?>][force_site_button]" value="no"<?php echo $force_site_checked_no; ?>>
 			<br><br>
 			
-			<h3>Use old Patreon Button</h3>
-			Recently Patreon updated their design, logo and patron button. The plugin now comes with the official default button which Patreon recommends using. But if you wish, you can keep using the old Patreon button by setting 'Yes' for below setting.
-			
-			<br><br>
-			Yes <input type="radio" name="opt[<?php echo $tab; ?>][old_button]" value="yes"<?php echo $use_old_patreon_button_yes; ?>>
-			No <input type="radio" name="opt[<?php echo $tab; ?>][old_button]" value="no"<?php echo $use_old_patreon_button_no; ?>>
-			<br><br>
+		
 			<h3>Use a custom Button</h3>
 			You can use a custom image for your button! Just click on below field to be taken to your WordPress media library to select your button or upload a new button and select that one. After selecting your button, save options and your new custom button will be made active.
 			
@@ -111,12 +105,12 @@ echo $this->do_admin_settings_form_header($tab);
 		<?php
 			if($this->opt[$tab]['custom_button']!='')
 			{
-				echo '<a rel="nofollow"'.@$new_window.' href="'.@$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:50px;width:100%;height:auto;" src="'.$this->opt[$tab]['custom_button'].'"></a>';				
+				echo '<a rel="nofollow"'.@$new_window.' href="'.@$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:50px;width:100%;height:auto;" src="'.$this->opt[$tab]['custom_button'].'"></a>';
 				
 			}
 		?>
 			<h3>Width for your custom button</h3>
-			You can set the width for your custom button if you want to have it display larger or smaller. Height will be adjusted automatically. If you leave this empty, default width of 200px will be used - something close to official Patreon button. Experiment with this value if you think your custom button is larger/smaller than you wish. 
+			You can set the width for your custom button if you want to have it display larger or smaller. Height will be adjusted automatically. If you leave this empty, default width of 200px will be used - something close to the default button. Experiment with this value if you think your custom button is larger/smaller than you wish. 
 			<br><br>
 			<input type="text" style="width : 50px" name="opt[<?php echo $tab; ?>][custom_button_width]" value="<?php echo $this->opt[$tab]['custom_button_width']; ?>">
 		

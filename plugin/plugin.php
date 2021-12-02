@@ -1,7 +1,7 @@
 <?php
 
 
-class cb_p6_plugin extends cb_p6_core
+class cb_p8_plugin extends cb_p8_core
 {
 	public function plugin_construct()
 	{
@@ -31,8 +31,7 @@ class cb_p6_plugin extends cb_p6_core
 	{
 		
 		add_menu_page( $this->lang['admin_menu_label'], $this->lang['admin_menu_label'], 'administrator', 'settings_'.$this->internal['id'], array(&$this,'do_settings_pages'), $this->internal['plugin_url'].'images/admin_menu_icon.png', 86 );
-		add_submenu_page( null, 'Patreon Button, Widgets and Plugin Admin Message', 'Admin message', 'manage_options', $this->internal['id'] . 'admin_message', array( &$this, 'admin_message_page' ) );
-		add_submenu_page( null, 'Installing Patreon WordPress', 'Installing Patreon WordPress', 'manage_options', $this->internal['id'] . '_install_pw', array( &$this, 'install_pw' ) );
+		add_submenu_page( null, 'Buy Button & Widgets For DeSo Admin Message', 'Admin message', 'manage_options', $this->internal['id'] . 'admin_message', array( &$this, 'admin_message_page' ) );
 		
 	}
 	public function admin_init_p() {
@@ -42,8 +41,8 @@ class cb_p6_plugin extends cb_p6_core
 		add_filter( 'pre_set_site_transient_update_plugins', array(&$this, 'check_for_update' ),99 );
 		add_action( 'admin_enqueue_scripts',  array(&$this, 'load_pointers' ) );
 		add_filter( $this->internal['prefix'].'admin_pointers-dashboard', array( &$this, 'widgets_pointer' ) );
-		add_action( 'cb_p6_action_before_do_admin_page_tabs', array( &$this, 'pro_pitch' ) );
-		add_action( 'wp_ajax_cb_p6_dismiss_admin_notice', array( $this, 'dismiss_admin_notice' ), 10, 1 );
+		add_action( 'cb_p8_action_before_do_admin_page_tabs', array( &$this, 'pro_pitch' ) );
+		add_action( 'wp_ajax_cb_p8_dismiss_admin_notice', array( $this, 'dismiss_admin_notice' ), 10, 1 );
 
 		/* Old Widget notice  - can be used to show new notices.
 	   if(!isset($this->opt['widget_update_notice_shown']) AND !$this->opt['setup_is_being_done']) {
@@ -160,11 +159,11 @@ class cb_p6_plugin extends cb_p6_core
  	public function activate_p()
 	{
 		// Not setting the default return to 0 like the one in init check here because we dont want to overwrite the value 0 for installs existing at the date this code was implemented
-		$plugin_first_activated   = get_option( 'cb_p6_first_activated', false );
+		$plugin_first_activated   = get_option( 'cb_p8_first_activated', false );
 				
 		if ( !$plugin_first_activated ) {
 			
-			update_option( 'cb_p6_first_activated', time() );
+			update_option( 'cb_p8_first_activated', time() );
 		
 		}
 	}
@@ -177,7 +176,7 @@ class cb_p6_plugin extends cb_p6_core
 			return;
 		}
 		// If setup was not done, redirect to wizard
-		if($this->opt['quickstart']['site_account']=='Delete this and enter your Site or your personal (admin) Patreon account here' AND !isset($_REQUEST['setup_stage']))
+		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/DiamondApp/DeSo profile link here' AND !isset($_REQUEST['setup_stage']))
 		{
 
 			$this->opt['setup_is_being_done']=true;
@@ -208,7 +207,7 @@ class cb_p6_plugin extends cb_p6_core
 	{
 		$current_screen=get_current_screen();
 
-		if($current_screen->base=='toplevel_page_settings_'.$this->internal['id'] OR ( isset( $_REQUEST['page']) AND $_REQUEST['page']== 'cb_p6_install_pw' ) )
+		if($current_screen->base=='toplevel_page_settings_'.$this->internal['id'] OR ( isset( $_REQUEST['page']) AND $_REQUEST['page']== 'cb_p8_install_pw' ) )
 		{
 			wp_enqueue_style( $this->internal['id'].'-css-admin', $this->internal['plugin_url'].'plugin/includes/css/admin.css' );
 			
@@ -327,7 +326,7 @@ class cb_p6_plugin extends cb_p6_core
 	public function do_setup_wizard_p($v1)
 	{
 
-		if($this->opt['quickstart']['site_account']=='Delete this and enter your Site or your personal (admin) Patreon account here')
+		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/DiamondApp/DeSo profile link here')
 		{
 			$this->internal['setup_is_being_done']=true;
 			
@@ -337,7 +336,7 @@ class cb_p6_plugin extends cb_p6_core
 				
 				require($this->internal['plugin_path'].'plugin/includes/setup_2.php');
 		
-			}	
+			}
 			return;
 		}
 		
@@ -345,16 +344,16 @@ class cb_p6_plugin extends cb_p6_core
 		return;
 
 	}
-	public function pro_pitch_p()
-	{
+	public function pro_pitch_p() {
 		// This function displays pro pitch after page admin header
 		
 		if($this->check_addon_exists('patron_plugin_pro')=='notinstalled')
 		{	
-
-			echo '<div class="cb_p6_pro_pitch">';
-			echo $this->lang['cb_p6_a1_addon_available_header'];	
+			/* Pro upsell
+			echo '<div class="cb_p8_pro_pitch">';
+			echo $this->lang['cb_p8_a1_addon_available_header'];	
 			echo '</div>';
+			*/
 		}
 		
 	}
@@ -470,11 +469,11 @@ class cb_p6_plugin extends cb_p6_core
 					
 					<table class="form-table">
 						<tr><th>
-							<label for="address"><?php _e('Your Patreon User', $this->internal['id']); ?>
+							<label for="address"><?php _e('Your BitClout/DiamondApp/DeSo profile', $this->internal['id']); ?>
 							</label></th>
 							<td>
-								<input type="text" name="<?php echo $this->internal['id'];?>_patreon_user" id="<?php echo $this->internal['id'];?>_patreon_user" value="<?php echo esc_attr( get_the_author_meta( $this->internal['prefix'].'patreon_user', $user->ID ) ); ?>" class="regular-text" /><br />
-									<span class="description"><?php _e('Please enter your Patreon user.', $this->internal['id']); ?></span>
+								<input type="text" name="<?php echo $this->internal['id'];?>_bitclout_profile" id="<?php echo $this->internal['id'];?>_bitclout_profile" value="<?php echo esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $user->ID ) ); ?>" class="regular-text" /><br />
+									<span class="description"><?php _e('Enter your BitClout/DiamondApp/DeSo profile link here', $this->internal['id']); ?></span>
 							</td>
 						</tr>
 					</table>
@@ -492,7 +491,7 @@ class cb_p6_plugin extends cb_p6_core
 
 		if ( !current_user_can( 'edit_user', $user_id ) ) $return = FALSE;
 
-		update_user_meta( $user_id, $this->internal['prefix'].'patreon_user', $_POST[$this->internal['prefix'].'patreon_user'] );
+		update_user_meta( $user_id, $this->internal['prefix'].'bitclout_profile', $_POST[$this->internal['prefix'].'bitclout_profile'] );
 		
 	}
 
@@ -506,7 +505,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		$get_url=get_permalink();	
 		$append = '';
-		$append.='<div class="'.$this->internal['prefix'].'patreon_site_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
+		$append.='<div class="'.$this->internal['prefix'].'bitclout_site_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
 		
 
 		if($this->opt['quickstart']['redirect_url']=='')
@@ -522,7 +521,7 @@ class cb_p6_plugin extends cb_p6_core
 
 		$user=$this->opt['quickstart']['site_account'];
 
-		$url = $this->make_to_patreon_url( $user, 'site_sidebar_widget' );
+		$url = $this->make_to_bitclout_url( $user, 'site_sidebar_widget' );
 
 		// Lets shove in the target=_blank if open in new window is set :
 		
@@ -572,14 +571,14 @@ class cb_p6_plugin extends cb_p6_core
 
 		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 			if ( current_user_can( 'manage_options' ) ) {
-				$button = 'Patreon button not appearing because you have not saved your Patreon profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p6&cb_p6_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+				$button = 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your BitClout/DiamondApp/DeSo profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 			}
 			else {
 				$button = '';
 			}
 		}
 		else {
-			$button = $this->make_to_patreon_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+			$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 		}
 		
 		
@@ -623,7 +622,7 @@ class cb_p6_plugin extends cb_p6_core
 			
 
 		// form array of items set to 1
-		$append='<div class="'.$this->internal['prefix'].'patreon_button" style="text-align:'.$this->opt['post_button']['insert_text_align'].' !important;margin-top:'.$this->opt['post_button']['insert_margin'].';margin-bottom:'.$this->opt['post_button']['insert_margin'].';">';
+		$append='<div class="'.$this->internal['prefix'].'bitclout_button" style="text-align:'.$this->opt['post_button']['insert_text_align'].' !important;margin-top:'.$this->opt['post_button']['insert_margin'].';margin-bottom:'.$this->opt['post_button']['insert_margin'].';">';
 			
 
 			
@@ -647,7 +646,7 @@ class cb_p6_plugin extends cb_p6_core
 			
 
 		$author_id=get_the_author_meta('ID');
-		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'patreon_user', $author_id ) );
+		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
 		
 		
 		if($this->opt['quickstart']['force_site_button']=='yes' OR $user=='')
@@ -655,7 +654,7 @@ class cb_p6_plugin extends cb_p6_core
 			$user=$this->opt['quickstart']['site_account'];
 		}
 		
-		$url = $this->make_to_patreon_url( $user, 'post_button' );		
+		$url = $this->make_to_bitclout_url( $user, 'post_button' );
 
 		if(isset($this->opt['quickstart']['old_button']) AND $this->opt['quickstart']['old_button']=='yes')
 		{
@@ -700,14 +699,14 @@ class cb_p6_plugin extends cb_p6_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$append.= 'Patreon button not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p6&cb_p6_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+					$append.= 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 				}
 				else {
 					$append.= '';
 				}
 			}
 			else {
-				$append.= $this->make_to_patreon_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				$append.= $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 			}			
 			
 		}
@@ -716,7 +715,7 @@ class cb_p6_plugin extends cb_p6_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$append.= 'This author has to set his or her Patreon vanity profile name in his profile before widget can link to his profile. Additionally we can\'t show the site Patreon profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p6&cb_p6_tab=quickstart' ) .'">here</a> to save site profile name for site\'s Patreon. Only you as an admin can see this message.';
+					$append.= 'This author has to set his or her BitClout/DiamondApp/DeSo profile url in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/DiamondApp/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s BitClout/DiamondApp/DeSo. Only you as an admin can see this message.';
 				}
 				else {
 					$append.= '';
@@ -724,7 +723,7 @@ class cb_p6_plugin extends cb_p6_core
 			}
 			else {
 				
-				$append.= $this->make_to_patreon_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				$append.= $this->make_to_bitclout_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 			}					
 
 		}
@@ -747,12 +746,12 @@ class cb_p6_plugin extends cb_p6_core
 		
 		$get_url=get_permalink();
 		$append='';
-		$append.='<div class="'.$this->internal['prefix'].'patreon_author_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
+		$append.='<div class="'.$this->internal['prefix'].'bitclout_author_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
 		
 
 		$author_id=get_the_author_meta('ID');
 		
-		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'patreon_user', $author_id ) );
+		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
 
 		if($this->opt['quickstart']['force_site_button']=='yes' OR $user=='')
 		{
@@ -760,7 +759,7 @@ class cb_p6_plugin extends cb_p6_core
 			
 		}
 		
-		$url = $this->make_to_patreon_url( $user, 'author_sidebar_widget' );		
+		$url = $this->make_to_bitclout_url( $user, 'author_sidebar_widget' );		
 
 		if($this->opt['quickstart']['old_button']=='yes')
 		{
@@ -803,14 +802,14 @@ class cb_p6_plugin extends cb_p6_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$button = 'Patreon button not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p6&cb_p6_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+					$button = 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 				}
 				else {
 					$button = '';
 				}
 			}
 			else {
-				$button = $this->make_to_patreon_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 			}			
 			
 		}
@@ -819,7 +818,7 @@ class cb_p6_plugin extends cb_p6_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$button = 'This author has to set his or her Patreon vanity profile name in his profile before widget can link to his profile. Additionally we can\'t show the site Patreon profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p6&cb_p6_tab=quickstart' ) .'">here</a> to save site profile name for site\'s Patreon. Only you as an admin can see this message.';
+					$button = 'This author has to set his or her BitClout/DiamondApp/DeSo vanity profile name in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/DiamondApp/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s Patreon. Only you as an admin can see this message.';
 				}
 				else {
 					$button = '';
@@ -827,7 +826,7 @@ class cb_p6_plugin extends cb_p6_core
 			}
 			else {
 				
-				$button = $this->make_to_patreon_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				$button = $this->make_to_bitclout_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 			}					
 
 		}
@@ -851,7 +850,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		
-		if( !class_exists( 'Patreon_Wordpress' ) ) {
+		if( !class_exists( 'bitclout_Wordpress' ) ) {
 			if ( current_user_can( 'manage_options' ) ) {
 				$append = '<p>';
 				$append .= $this->lang['pw_install_message_14'];
@@ -898,7 +897,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		$get_url=get_permalink();
 		$append = '';
-		$append .= '<div class="'.$this->internal['prefix'].'patreon_author_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
+		$append .= '<div class="'.$this->internal['prefix'].'bitclout_author_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
 		
 		
 		$goals = get_option( 'patreon-campaign-goals',  false );
@@ -971,7 +970,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		$user=$this->opt['quickstart']['site_account'];			
 
-		$url = $this->make_to_patreon_url( $user, 'goals_widget_button' );	
+		$url = $this->make_to_bitclout_url( $user, 'goals_widget_button' );	
 
 		if($this->opt['quickstart']['old_button']=='yes')
 		{
@@ -1012,12 +1011,12 @@ class cb_p6_plugin extends cb_p6_core
 
 		if($this->opt['quickstart']['force_site_button']=='yes')
 		{
-			$button = $this->make_to_patreon_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+			$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 			
 		}
 		else
 		{
-			$button = $this->make_to_patreon_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+			$button = $this->make_to_bitclout_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 		}
 		
 	
@@ -1051,7 +1050,7 @@ class cb_p6_plugin extends cb_p6_core
 	
 		global $post;
 		
-		if( class_exists( 'Patreon_Wordpress' ) ) {
+		if( class_exists( 'bitclout_Wordpress' ) ) {
 			
 			if($this->opt['quickstart']['force_site_button']=='yes')
 			{
@@ -1083,7 +1082,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 	}
 	
-	public function make_to_patreon_link_p($url, $button, $margin=10, $max_width=200, $new_window=false)
+	public function make_to_bitclout_link_p($url, $button, $margin=10, $max_width=200, $new_window=false)
 	{
 		if($new_window)
 		{
@@ -1100,7 +1099,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		
 	}
-	public function make_to_patreon_link_to_profile_p($url, $button, $margin=10, $max_width=200, $new_window=false)
+	public function make_to_bitclout_link_to_profile_p($url, $button, $margin=10, $max_width=200, $new_window=false)
 	{
 		if($new_window)
 		{
@@ -1117,7 +1116,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		
 	}
-	public function make_to_patreon_url_p( $user, $utm_content )
+	public function make_to_bitclout_url_p( $user, $utm_content )
 	{
 		// wrapper to add some params and filter the url.		
 
@@ -1212,9 +1211,9 @@ class cb_p6_plugin extends cb_p6_core
 			return;
 		}
 		
-		echo '<div id="cb_p6_admin_message_screen">';
+		echo '<div id="cb_p8_admin_message_screen">';
 
-		echo '<div id="cb_p6_admin_message_page"><h1 style="margin-top: 0px;">Installing Patreon WordPress!</h1><div id="cb_p6_admin_message_content">';
+		echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">Installing Patreon WordPress!</h1><div id="cb_p8_admin_message_content">';
 
 		// modify these variables with your new/old plugin values
 		$plugin_slug = 'patreon-connect/patreon.php';
@@ -1333,20 +1332,20 @@ class cb_p6_plugin extends cb_p6_core
 			return;
 		}
 		
-		echo '<div id="cb_p6_admin_message_screen">';
+		echo '<div id="cb_p8_admin_message_screen">';
 	
 			// Put some defaults so sites with warnings on will be fine
 			$heading = $this->lang['admin_message_default_title'];
 			$content = $this->lang['admin_message_default_content'];
 			
-			if ( isset( $_REQUEST['cb_p6_admin_message_title'] ) ) {
-				$heading = $this->lang[ $_REQUEST['cb_p6_admin_message_title'] ];
+			if ( isset( $_REQUEST['cb_p8_admin_message_title'] ) ) {
+				$heading = $this->lang[ $_REQUEST['cb_p8_admin_message_title'] ];
 			}
-			if ( isset( $_REQUEST['cb_p6_admin_message_content'] ) ) {
-				$content = $this->lang[ $_REQUEST['cb_p6_admin_message_content'] ];
+			if ( isset( $_REQUEST['cb_p8_admin_message_content'] ) ) {
+				$content = $this->lang[ $_REQUEST['cb_p8_admin_message_content'] ];
 			}
 			
-			echo '<div id="cb_p6_admin_message_page"><h1 style="margin-top: 0px;">' . $heading . '</h1><div id="cb_p6_admin_message_content">' . $content . '</div></div>';
+			echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">' . $heading . '</h1><div id="cb_p8_admin_message_content">' . $content . '</div></div>';
 		
 			echo '</div>';
 		
@@ -1365,7 +1364,7 @@ class cb_p6_plugin extends cb_p6_core
 		$screen_id = $screen->id;
 		
 		// Get pointers for this screen
-		$pointers = apply_filters( 'cb_p6_admin_pointers-' . $screen_id, array() );
+		$pointers = apply_filters( 'cb_p8_admin_pointers-' . $screen_id, array() );
 		 
 		if ( ! $pointers || ! is_array( $pointers ) ) {
 			return;
@@ -1407,17 +1406,17 @@ class cb_p6_plugin extends cb_p6_core
 
 	public function widgets_pointer_p( $p ) {
 		
-		$widget_pointer_message = $this->lang['new_patreon_widget_pointer_message'];
+		$widget_pointer_message = $this->lang['new_bitclout_widget_pointer_message'];
 		
 		if ( is_plugin_active( 'patron-plugin-pro/index.php' ) ) {
-			$widget_pointer_message = $this->lang['new_patreon_widget_pointer_message_for_pp_users'];		
+			$widget_pointer_message = $this->lang['new_bitclout_widget_pointer_message_for_pp_users'];		
 		}
 		
 		$p['xyz140'] = array(
 			'target' => '#menu-appearance',
 			'options' => array(
 				'content' => sprintf( '<h3> %s </h3> <p> %s </p>',
-					$this->lang['new_patreon_widget_pointer_title'],
+					$this->lang['new_bitclout_widget_pointer_title'],
 					$widget_pointer_message
 				),
 				'position' => array( 'edge' => 'top', 'align' => 'middle' )
@@ -1430,11 +1429,11 @@ class cb_p6_plugin extends cb_p6_core
 	
 		// Checks if plugin first activation date is saved for existing installs. Its here for backwards compatibility for existing installs before this version (2.1.1), and in case this meta info is lost in the db for any reason
 		
-		$plugin_first_activated = get_option( 'cb_p6_first_activated', 'NONE' );
+		$plugin_first_activated = get_option( 'cb_p8_first_activated', 'NONE' );
 
 		if ( $plugin_first_activated == 'NONE' ) {
 			// If no date was set, set it to 0. This will mark existing installs
-			update_option( 'cb_p6_first_activated', 0 );
+			update_option( 'cb_p8_first_activated', 0 );
 		}
 		
 	}
@@ -1443,7 +1442,7 @@ class cb_p6_plugin extends cb_p6_core
 	public function check_days_after_last_non_system_notice_p( $days ) {
 		// Calculates if $days many days passed after last non system notice was showed. Used in deciding if and when to show admin wide notices
 		
-		$last_non_system_notice_shown_date = get_option( 'cb_p6_last_non_system_notice_shown_date', 0 );
+		$last_non_system_notice_shown_date = get_option( 'cb_p8_last_non_system_notice_shown_date', 0 );
 		
 		// Calculate if $days days passed since last notice was shown
 		if ( ( time() - $last_non_system_notice_shown_date ) > ( $days * 24 * 3600 ) ) {
@@ -1459,7 +1458,7 @@ class cb_p6_plugin extends cb_p6_core
 	public function check_days_after_last_system_notice_p( $days ) {
 		// Calculates if $days many days passed after last non system notice was showed. Used in deciding if and when to show admin wide notices
 		
-		$last_non_system_notice_shown_date = get_option( 'cb_p6_last_system_notice_shown_date', 0 );
+		$last_non_system_notice_shown_date = get_option( 'cb_p8_last_system_notice_shown_date', 0 );
 		
 		// Calculate if $days days passed since last notice was shown
 		if ( ( time() - $last_non_system_notice_shown_date ) > ( $days * 24 * 3600 ) ) {
@@ -1475,7 +1474,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		// Used to calculate days passed after first plugin activation. 
 		
-		$plugin_first_activated   = get_option( 'cb_p6_first_activated', 0 );
+		$plugin_first_activated   = get_option( 'cb_p8_first_activated', 0 );
 				
 		// Calculate if $days days passed since last notice was shown		
 		if ( ( time() - $plugin_first_activated ) > ( $days * 24 * 3600 ) ) {
@@ -1489,15 +1488,11 @@ class cb_p6_plugin extends cb_p6_core
 	
 	public function admin_notices_p() {
 		
-
-		if ( isset( $_REQUEST['page'] ) AND $_REQUEST['page'] == 'patreon_wordpress_setup_wizard' ) {
-			return;
-		}
 		
 		if ( $this->opt['setup_is_being_done'] ) {
 			return;
 		}
-
+		/* Pro upsells 
 		// Wp org wants non-error / non-functionality related notices to be shown infrequently and one per admin-wide page load, and be dismissable permanently. 		
 
 		$patron_content_manager_pitch_shown = get_option( 'patron_content_manager_pitch_shown', false );
@@ -1510,7 +1505,7 @@ class cb_p6_plugin extends cb_p6_core
 		if( !$patron_content_manager_pitch_shown AND !$this->check_plugin_exists('patron-content-manager') AND $current_screen->id != 'plugins' AND ( ($this->check_days_after_last_non_system_notice( 7 ) AND $this->calculate_days_after_first_activation( 30 ) ) ) AND !$already_showed_non_system_notice AND !isset($GLOBALS['patron_content_manager_pitch_being_shown'])) {
 
 			?>
-				<div class="notice notice-success is-dismissible cb_p6_notice" id="cb_p6_patron_content_manager_pitch"><p><div style="display: flex; flex-wrap: wrap; flex-direction: row;"><a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p6&utm_campaign=&utm_content=cb_p6_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank"><img class="addon_upsell" src="<?php echo $this->internal['plugin_url']."images/Easily-manage-gated-posts.jpg"?>" style="width:200px; height:106px;margin: 10px; border: 1px solid #000000; margin-right: 20px;" alt="Patron Content Manager" /></a><div style="max-width: 700px; width: 100%;"><div style="max-width:500px; width: auto; float:left; display:inline-box"><h2 style="margin-top: 0px; font-size: 150%; font-weight: bold;">Easily manage your patron only content with Patron Content Manager</h2></div><div style="width:100%; font-size: 125% !important;clear:both; ">Get new <a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p6&utm_campaign=&utm_content=cb_p6_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank">Patron Content Manager</a> plugin for Patreon and easily re-gate content, gate old content, use detailed locking options, use content locking wizard to manage your patron only content & increase your patrons and pledges.<br /><br /><a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p6&utm_campaign=&utm_content=cb_p6_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank">Check out all features here</a></div></div></div></p>
+				<div class="notice notice-success is-dismissible cb_p8_notice" id="cb_p8_patron_content_manager_pitch"><p><div style="display: flex; flex-wrap: wrap; flex-direction: row;"><a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p8&utm_campaign=&utm_content=cb_p8_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank"><img class="addon_upsell" src="<?php echo $this->internal['plugin_url']."images/Easily-manage-gated-posts.jpg"?>" style="width:200px; height:106px;margin: 10px; border: 1px solid #000000; margin-right: 20px;" alt="Patron Content Manager" /></a><div style="max-width: 700px; width: 100%;"><div style="max-width:500px; width: auto; float:left; display:inline-box"><h2 style="margin-top: 0px; font-size: 150%; font-weight: bold;">Easily manage your patron only content with Patron Content Manager</h2></div><div style="width:100%; font-size: 125% !important;clear:both; ">Get new <a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p8&utm_campaign=&utm_content=cb_p8_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank">Patron Content Manager</a> plugin for Patreon and easily re-gate content, gate old content, use detailed locking options, use content locking wizard to manage your patron only content & increase your patrons and pledges.<br /><br /><a href="https://codebard.com/patron-content-manager?utm_source=<?php urlencode( site_url() ) ?>&utm_medium=cb_p8&utm_campaign=&utm_content=cb_p8_addon_upsell_notice_patron_content_manager&utm_term=" target="_blank">Check out all features here</a></div></div></div></p>
 				</div>
 			<?php	
 			
@@ -1518,7 +1513,7 @@ class cb_p6_plugin extends cb_p6_core
 			$GLOBALS['patron_content_manager_pitch_being_shown'] = true;
 			
 		}
-		
+		*/
 	}
 
 	public function check_plugin_exists_p( $plugin_dir ) {
@@ -1539,7 +1534,7 @@ class cb_p6_plugin extends cb_p6_core
 		
 		// Mapping what comes from REQUEST to a given value avoids potential security problems and allows custom actions depending on notice
 
-		if ( $_REQUEST['notice_id'] == 'cb_p6_patron_content_manager_pitch' ) {
+		if ( $_REQUEST['notice_id'] == 'cb_p8_patron_content_manager_pitch' ) {
 			
 			update_option( 'patron_content_manager_pitch_shown', true);
 			
@@ -1554,26 +1549,26 @@ class cb_p6_plugin extends cb_p6_core
 		
 		// Sets the last non system notice shown date to now whenever called. Used for decicing when to show admin wide notices that are not related to functionality. 
 		
-		update_option( 'cb_p6_last_non_system_notice_shown_date', time() );
+		update_option( 'cb_p8_last_non_system_notice_shown_date', time() );
 			
 	}
 	public function set_last_system_notice_shown_date_p() {
 		
 		// Sets the last non system notice shown date to now whenever called. Used for decicing when to show admin wide notices that are not related to functionality. 
 		
-		update_option( 'cb_p6_system_notice_shown_date', time() );
+		update_option( 'cb_p8_system_notice_shown_date', time() );
 			
 	}
 	
 }
 
-$cb_p6 = cb_p6_plugin::get_instance();
+$cb_p8 = cb_p8_plugin::get_instance();
 
-function cb_p6_get()
+function cb_p8_get()
 {
 
 	// This function allows any plugin to easily retieve this plugin object
-	return cb_p6_plugin::get_instance();
+	return cb_p8_plugin::get_instance();
 
 }
 

@@ -5,10 +5,10 @@
 
 <div class="<?php echo $this->internal['prefix'];?>setup_modal" <?php if(!isset($_REQUEST['setup_stage'])){ ?> id="<?php echo $this->internal['prefix'];?>setup_modal" <?php } ?>>
 
-	<div style="font-size:175%;font-weight:bold;margin-top:30px;display:inline-table;width:100%;">Patreon Button & Plugin by <a href="https://codebard.com" target="_blank"><img src="<?php echo $this->internal['plugin_url']; ?>images/codebard_very_small.png"></a> is almost ready!</div>
+	<div style="display:block;font-size:175%;font-weight:bold;margin-top:30px;display:inline-table;width:100%;">Buy Button & Widgets For BitClout, DiamondApp and DeSo is almost ready!</div>
 
 	
-	<div style="font-size:150%;font-weight:bold;margin-top:30px;margin-bottom:15px;display:inline-table;width:100%;">Just one thing - you must fill in your Patreon profile address or account name below:</div>
+	<div style="display:block;font-size:150%;font-weight:bold;margin-top:30px;margin-bottom:15px;display:inline-table;width:100%;">Just one thing - you need to fill in your Patreon profile address or account name below:</div>
 
 	<?php 
 	
@@ -42,7 +42,7 @@
 	<input type="hidden" name="setup_stage" value="1">
 	</form>
 
-	<div style="font-size:125%;font-weight:bold;margin-top:30px;margin-bottom:15px;display:inline-table;width:100%;">If you don't know how to do that, <a href="https://codebard.com/patreon-button-and-plugin-how-to-find-your-profile-address-or-account-name" target="_blank">click here to read the guide</a> - its easy!</div>
+	<div style="font-size:125%;font-weight:bold;margin-top:30px;margin-bottom:15px;display:inline-table;width:100%;">If you don't know how to do that, <a href="https://codebard.com/how-to-find-out-your-bitclout-diamondapp-or-other-deso-node-profile-link" target="_blank">click here to read the guide</a> - its easy!</div>
 
 	</div>
 	

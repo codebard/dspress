@@ -16,14 +16,7 @@
 		$pro_manual='';
 	}
 	?>
-	<div class="cb_p6_setup_wizard_one_col" style="text-align : center;font-size : 100%; max-width : 600px;padding-top: 30px;">
-	
-			<button class="cb_p6_admin_button" onclick="window.open('https://codebard.com/patreon-button-and-plugin-manual');" target="_blank"><?php echo $this->lang['setup_read_manual'];?></button>
-	
-			
-		<?php 	echo $pro_manual; 	?>
 
-	</div>
 	<div class="cb_p6_setup_wizard_two_col" style="max-width : 600px;">
 	
 		<div class="cb_p6_setup_wizard_col_33" style="text-align : center; max-width : 600px;">

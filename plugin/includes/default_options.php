@@ -9,9 +9,9 @@ $this->opt = array_replace_recursive(
 	
 		'quickstart'=> array(
 		
-			'site_account' => 'Delete this and enter your Site or your personal (admin) Patreon account here',
+			'site_account' => 'Delete this and enter your BitClout/DiamondApp/DeSo profile link here',
 			'redirect_url'=>'',	
-			'site_support_message'=>'Support {sitename} on Patreon!',	
+			'site_support_message'=>'Buy {sitename} at {node}!',
 			'open_new_window'=>'no',
 			'force_site_button'=>'no',
 			'old_button'=>'no',
@@ -27,7 +27,7 @@ $this->opt = array_replace_recursive(
 			'message_over_post_button_font_size'=>'24px',	
 			'insert_text_align'=>'center',	
 			'insert_margin'=>'15px',
-			'message_over_post_button'=>'Liked it? Take a second to support {authorname} on Patreon!',
+			'message_over_post_button'=>'Liked it? Buy {authorname} at {node}!',
 			'message_over_post_button_margin'=>'10px',
 			'button_margin'=>'10px',
 		),

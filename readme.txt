@@ -1,6 +1,6 @@
-===  Buy Button & Widgets For BitClout ===
+===  Buy Button & Widgets For BitClout, DiamondApp and DeSo ===
 Author URI: http://codebard.com
-Plugin URI: https://wordpress.org/plugins/buy-button-and-widgets-for-bitclout/
+Plugin URI: https://wordpress.org/plugins/buy-button-and-widgets-for-bitclout-diamondapp-deso/
 Contributors: CodeBard
 Donate link: http://codebard.com/donate
 Tags: plugins, patreon, widgets, crowdfunding, crowdfund, crowd fund, crowd funding, sponsor, donate, donations, donation, charity, fundraising, charities, sponsorship, sponsorships, campaign, campaigns, giving, peer to peer, peer to peer fundraising, fundraiser, peer to peer fundraiser, non profit, non profits, income, money, subscription, social, rewards, kickstart
