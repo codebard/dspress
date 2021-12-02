@@ -1,19 +1,19 @@
 <?php
 /*
-	Plugin Name: Patreon Button, Widgets and Plugin by CodeBard
-	Plugin URI: https://wordpress.org/plugins/patron-button-and-widgets-by-codebard/
-	Description: Patreon Patron Buttons, Widgets and Patreon Functions
-	Version: 2.1.2
+	Plugin Name: Buy Button & Widgets For BitClout
+	Plugin URI: https://wordpress.org/plugins/buy-button-and-widgets-for-bitclout/
+	Description: Add BitClout Buy buttons and widgets to your WordPress website
+	Version: 1.0.0
 	Author: CodeBard
 	Author URI: http://codebard.com
-	Text Domain: cb_p6
+	Text Domain: cb_p8
 	Domain Path: /lang
 */
 
 
 
 
-class cb_p6_core {
+class cb_p8_core {
 
 	protected static $instance = null;
 
@@ -3809,9 +3809,9 @@ PRIMARY KEY  (".$key."_id)
 
 require('plugin/plugin.php');
 
-register_activation_hook($cb_p6->internal['plugin_path'].'index.php',array(&$cb_p6,'activate'));
+register_activation_hook($cb_p8->internal['plugin_path'].'index.php',array(&$cb_p8,'activate'));
 
-register_deactivation_hook( $cb_p6->internal['plugin_path'].'index.php', array(&$cb_p6,'deactivate'));
+register_deactivation_hook( $cb_p8->internal['plugin_path'].'index.php', array(&$cb_p8,'deactivate'));
 
 
 require('plugin/includes/direct_includes.php');
