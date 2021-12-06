@@ -8,10 +8,10 @@ $this->internal = array_replace_recursive(
 	array(
 		
 		'id' => 'cb_p8',
-		'plugin_id' => 'patron-button-and-widgets-by-codebard',
+		'plugin_id' => 'dspress-for-bitclout-diamond-deso',
 		'prefix' => 'cb_p8_',
 		'version' => '1.0.0',
-		'plugin_name' => 'Buy Button & Widgets For BitClout, DiamondApp and DeSo',
+		'plugin_name' => 'DSPress for BitClout, Diamond & DeSo',
 		
 		'callable_from_request' => array(
 			

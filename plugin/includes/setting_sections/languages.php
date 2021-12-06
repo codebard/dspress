@@ -23,7 +23,7 @@ else
 
 echo '<h2>'.$this->lang['admin_title_choose_reset_language'].'</h2>';
 
-echo '<form action="admin.php?page=settings_cb_p6&'.$this->internal['prefix'].'tab=languages" name="" method="post" class="'.$this->internal['prefix'].'inline_block_form">';
+echo '<form action="admin.php?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab=languages" name="" method="post" class="'.$this->internal['prefix'].'inline_block_form">';
 
 echo $this->do_admin_language_selector();
 
@@ -35,7 +35,7 @@ echo '<input type="submit" value="'.$this->lang['set_language_button_label'].'" 
 echo '</form>';
 
 
-echo '<form action="admin.php?page=settings_cb_p6&'.$this->internal['prefix'].'tab=languages" name="" method="post" class="'.$this->internal['prefix'].'inline_block_form">';
+echo '<form action="admin.php?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab=languages" name="" method="post" class="'.$this->internal['prefix'].'inline_block_form">';
 
 
 echo '<input type="hidden" name="'.$this->internal['prefix'].'action" value="reset_languages">';
@@ -54,7 +54,7 @@ if(wp_script_is('jquery')) {
 
 echo '<h2>'.$this->lang['admin_title_modify_current_language'].'</h2>';
 
-echo '<form action="admin.php?page=settings_cb_p6&'.$this->internal['prefix'].'tab=languages" name="" method="post">';
+echo '<form action="admin.php?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab=languages" name="" method="post">';
 
 foreach($this->lang as $key => $value)
 {

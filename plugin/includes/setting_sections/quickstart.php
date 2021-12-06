@@ -17,7 +17,36 @@ echo $this->do_admin_settings_form_header($tab);
 		$force_site_checked_no = '';
 		$use_old_patreon_button_yes = '';
 		$use_old_patreon_button_no = '';
+		$buy_button_checked = '';
+		$follow_button_checked = '';
+		$force_profile_checked_yes = '';
+		$force_profile_checked_no = '';
 
+
+		if(isset($this->opt[$tab]['button_type']) AND $this->opt[$tab]['force_profile_link']=='yes')
+		{
+		
+			$force_profile_checked_yes=" CHECKED";
+		
+		}
+		if(isset($this->opt[$tab]['button_type']) AND $this->opt[$tab]['force_profile_link']=='no')
+		{
+		
+			$force_profile_checked_no=" CHECKED";
+		
+		}
+		if(isset($this->opt[$tab]['button_type']) AND $this->opt[$tab]['button_type']=='buy_button')
+		{
+		
+			$buy_button_checked=" CHECKED";
+		
+		}
+		if(isset($this->opt[$tab]['button_type']) AND $this->opt[$tab]['button_type']=='follow_button')
+		{
+		
+			$follow_button_checked=" CHECKED";
+		
+		}
 
 		if(isset($this->opt[$tab]['open_new_window']) AND $this->opt[$tab]['open_new_window']=='yes')
 		{
@@ -71,13 +100,32 @@ echo $this->do_admin_settings_form_header($tab);
 		
 		
 ?>
-			<h3>Site's BitClout / DiamondApp / DeSo Node profile link</h3>
-			If you chose not to use profile links of Authors for each author, or an Author does not have any profile link saved in his/her author profile page, this profile link will be used for Buttons for users in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author sidebar widget</b>.<br><br>
-			<input type="text" style="width : 500px" name="opt[<?php echo $tab; ?>][site_account]" value="<?php echo $this->opt[$tab]['site_account']; ?>">
+			<h3>Site's BitClout / Diamond / DeSo Node profile</h3>
+			If you chose not to use profile of Authors for each author, or an Author does not have any profile saved in his/her author profile page, this profile will be used for Buttons for users in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author sidebar widget</b>.<br><br>
+			<input type="text" style="width : 500px" name="opt[<?php echo $tab; ?>][site_account]" value="<?php echo $this->opt[$tab]['site_account']; ?>"><br><br>
+			
+			
+			<h3>Use Buy buttons or Follow buttons</h3>
+			If you choose Buy buttons, the buttons and messages will prioritize sending your users directly to buying your token. And they will have a smaler follow link down below them. If you choose Follow buttons, the buttons will send your users to your profile. In this case they will have a small buy link down below them. If you change this, revisit your Appearance -> Widgets menu and update the label text in the widgets that you have already added. (ie, 'Buy {coin} at BitClout...' to 'Follow {coin} at BitClout')
+			
+			<br><br>
+			Buy buttons <input type="radio" name="opt[<?php echo $tab; ?>][button_type]" value="buy_button"<?php echo $buy_button_checked; ?>>
+			Follow buttons <input type="radio" name="opt[<?php echo $tab; ?>][button_type]" value="follow_button"<?php echo $follow_button_checked; ?>>
+			<br><br>
+			
+			
+			<h3>Make all buttons go to profile</h3>
+			If you use a DeSo node/app like Diamond which do not support a /buy url to send your users directly to buy your coin, choose 'yes' so that both Buy and Follow links will go to the profile instead of Buy buttons not working.
+			
+			<br><br>
+			
+			Yes <input type="radio" name="opt[<?php echo $tab; ?>][force_profile_link]" value="yes"<?php echo $force_profile_checked_yes; ?>>
+			No <input type="radio" name="opt[<?php echo $tab; ?>][force_profile_link]" value="no"<?php echo $force_profile_checked_no; ?>>
+			<br><br>
 			
 			
 			<h3>Open pages in new window?</h3>
-			If 'Yes', Your Patreon Profile will be opened in a new window when users click your Buy Buttons.
+			If 'Yes', links like Buy and Follow links will be opened in a new window when users click them.
 			
 			<br><br>
 			Yes <input type="radio" name="opt[<?php echo $tab; ?>][open_new_window]" value="yes"<?php echo $open_new_window_checked_yes; ?>>

@@ -24,7 +24,7 @@ class cb_p8_plugin extends cb_p8_core
 		}
 		
 		add_action( 'init', array( &$this, 'check_plugin_activation_date_for_existing_installs' ) );
-		add_action('admin_init',array(&$this,'check_redirect_to_setup_wizard'),99);			
+		add_action('admin_init',array(&$this,'check_redirect_to_setup_wizard'),99);
 		
 	}
 	public function add_admin_menus_p()
@@ -32,6 +32,8 @@ class cb_p8_plugin extends cb_p8_core
 		
 		add_menu_page( $this->lang['admin_menu_label'], $this->lang['admin_menu_label'], 'administrator', 'settings_'.$this->internal['id'], array(&$this,'do_settings_pages'), $this->internal['plugin_url'].'images/admin_menu_icon.png', 86 );
 		add_submenu_page( null, 'Buy Button & Widgets For DeSo Admin Message', 'Admin message', 'manage_options', $this->internal['id'] . 'admin_message', array( &$this, 'admin_message_page' ) );
+		add_submenu_page( '', 'DSPress Settings', 'DSPress Settings', 'administrator', 'cb_p8_setup_wizard', array(&$this, 'do_setup_wizard') );
+		
 		
 	}
 	public function admin_init_p() {
@@ -176,12 +178,21 @@ class cb_p8_plugin extends cb_p8_core
 			return;
 		}
 		// If setup was not done, redirect to wizard
-		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/DiamondApp/DeSo profile link here' AND !isset($_REQUEST['setup_stage']))
+		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/Diamond/DeSo profile link here' AND !isset($_REQUEST['setup_stage']))
 		{
 
 			$this->opt['setup_is_being_done']=true;
 			$this->update_opt();
-			$this->queue_modal('setup');
+			
+			// The below flag will allow hiding notices or avoiding recursive redirections 
+			update_option( 'cb_p8_is_being_done', true );
+			
+			// Toggle redirect flag off. If the user skips the wizard we will just show a notice in admin and not force subsequent redirections
+			update_option( 'cb_p8_redirect_to_setup_wizard', false );
+			
+			wp_redirect( admin_url( 'admin.php?page=cb_p8_setup_wizard&setup_stage=0') );
+			
+			
 			return;
 				
 		}
@@ -193,7 +204,7 @@ class cb_p8_plugin extends cb_p8_core
 			$this->opt['setup_is_being_done']=true;
 			$this->update_opt();
 			
-			$this->queue_modal('pro_pitch');
+			// $this->queue_modal('pro_pitch');
 			
 		}
 		
@@ -307,8 +318,7 @@ class cb_p8_plugin extends cb_p8_core
 			foreach( $options['plugins'] as $plugin ) {
 	
 				if( $plugin == $our_plugin ) {
-				   
-									
+
 				
 				}
 			}
@@ -325,16 +335,24 @@ class cb_p8_plugin extends cb_p8_core
 	}
 	public function do_setup_wizard_p($v1)
 	{
-
-		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/DiamondApp/DeSo profile link here')
+// debug
+$this->opt['setup_done']=false;
+		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/Diamond/DeSo profile link here' OR !$this->opt['setup_done'])
 		{
 			$this->internal['setup_is_being_done']=true;
 			
 			// No setup was done in this install. do setup
-			if(isset($_POST['setup_stage']) AND $_POST['setup_stage']=='1')
+			if(isset($_REQUEST['setup_stage']) AND $_REQUEST['setup_stage']=='0')
+			{
+
+				require($this->internal['plugin_path'].'plugin/includes/setup_0.php');
+		
+			}
+			// No setup was done in this install. do setup
+			if(isset($_REQUEST['setup_stage']) AND $_REQUEST['setup_stage']=='1')
 			{
 				
-				require($this->internal['plugin_path'].'plugin/includes/setup_2.php');
+				require($this->internal['plugin_path'].'plugin/includes/setup_1.php');
 		
 			}
 			return;
@@ -351,7 +369,7 @@ class cb_p8_plugin extends cb_p8_core
 		{	
 			/* Pro upsell
 			echo '<div class="cb_p8_pro_pitch">';
-			echo $this->lang['cb_p8_a1_addon_available_header'];	
+			echo $this->lang['cb_p8_a1_addon_available_header'];
 			echo '</div>';
 			*/
 		}
@@ -469,11 +487,11 @@ class cb_p8_plugin extends cb_p8_core
 					
 					<table class="form-table">
 						<tr><th>
-							<label for="address"><?php _e('Your BitClout/DiamondApp/DeSo profile', $this->internal['id']); ?>
+							<label for="address"><?php _e('Your BitClout/Diamond/DeSo profile', $this->internal['id']); ?>
 							</label></th>
 							<td>
 								<input type="text" name="<?php echo $this->internal['id'];?>_bitclout_profile" id="<?php echo $this->internal['id'];?>_bitclout_profile" value="<?php echo esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $user->ID ) ); ?>" class="regular-text" /><br />
-									<span class="description"><?php _e('Enter your BitClout/DiamondApp/DeSo profile link here', $this->internal['id']); ?></span>
+									<span class="description"><?php _e('Enter your BitClout/Diamond/DeSo profile link here', $this->internal['id']); ?></span>
 							</td>
 						</tr>
 					</table>
@@ -490,8 +508,32 @@ class cb_p8_plugin extends cb_p8_core
 		$user_id=$v1;
 
 		if ( !current_user_can( 'edit_user', $user_id ) ) $return = FALSE;
+		
+				
 
-		update_user_meta( $user_id, $this->internal['prefix'].'bitclout_profile', $_POST[$this->internal['prefix'].'bitclout_profile'] );
+		$user_name = '';
+
+		$profile_url = parse_url($_POST[$this->internal['prefix'].'bitclout_profile']);
+
+		if ( $profile_url AND isset($profile_url['path']) AND isset($profile_url['host']) ) {
+			$user_name = str_replace('/u/', '', $profile_url['path']);
+		}
+		// Check for any slashes in the name. If there are, then path is wrong
+
+
+		$node_name = $profile_url['host'];
+
+		if ( $profile_url['host']=='bitclout.com') {
+			$node_name = 'BitClout';
+		}
+		if ( $profile_url['host']=='diamondapp.com') {
+			$node_name = 'Diamond';
+		}
+
+
+		update_user_meta( $user_id, $this->internal['prefix'].'bitclout_profile', $user_name );
+		update_user_meta( $user_id, $this->internal['prefix'].'node_name', $node_name );
+		update_user_meta( $user_id, $this->internal['prefix'].'node_url', $profile_url['scheme']. '://' . $profile_url['host'] );
 		
 	}
 
@@ -503,7 +545,7 @@ class cb_p8_plugin extends cb_p8_core
 			
 		global $post;
 		
-		$get_url=get_permalink();	
+		$get_url=get_permalink();
 		$append = '';
 		$append.='<div class="'.$this->internal['prefix'].'bitclout_site_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
 		
@@ -521,7 +563,7 @@ class cb_p8_plugin extends cb_p8_core
 
 		$user=$this->opt['quickstart']['site_account'];
 
-		$url = $this->make_to_bitclout_url( $user, 'site_sidebar_widget' );
+		$profile_url = $this->make_bitclout_profile_url( false, 'site_sidebar_widget' );
 
 		// Lets shove in the target=_blank if open in new window is set :
 		
@@ -530,19 +572,11 @@ class cb_p8_plugin extends cb_p8_core
 			$new_window=' target="_blank"';
 		
 		}
+	
 		
-		if($this->opt['quickstart']['old_button']=='yes')
-		{
-			$button=$this->internal['plugin_url'].'images/'."patreon-medium-button.png";
-			$max_width = '200';
-		}
-		else
-		{
-			
-			$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
-			$max_width = '200';
-			
-		}
+		$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
+		$max_width = 'min-content';
+		
 		
 		if($this->opt['quickstart']['custom_button']!='')
 		{
@@ -559,7 +593,7 @@ class cb_p8_plugin extends cb_p8_core
 			}
 			
 		}
-		
+
 		if($this->opt['quickstart']['open_new_window']=='yes')
 		{
 			$new_window=true;
@@ -569,16 +603,24 @@ class cb_p8_plugin extends cb_p8_core
 			$new_window=false;
 		}
 
-		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+		if (filter_var($profile_url, FILTER_VALIDATE_URL) === FALSE) {
 			if ( current_user_can( 'manage_options' ) ) {
-				$button = 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your BitClout/DiamondApp/DeSo profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+				$button = 'BitClout/Diamond/DeSo button is not appearing because you have not saved your BitClout/Diamond/DeSo profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 			}
 			else {
 				$button = '';
 			}
 		}
 		else {
-			$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+			
+			if ( $this->opt['quickstart']['button_type']=='buy_button') {
+				$button = $this->make_buy_button(false, $this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+			}
+			if ( $this->opt['quickstart']['button_type']=='follow_button') {
+				$button = $this->make_follow_button(false, $this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				
+			}
+			
 		}
 		
 		
@@ -586,7 +628,7 @@ class cb_p8_plugin extends cb_p8_core
 		
 		$append.='</div>';
 
-		return $append;	
+		return $append;
 
 
 		//************************Site Sidebar Widget EOF*********************************//
@@ -656,18 +698,6 @@ class cb_p8_plugin extends cb_p8_core
 		
 		$url = $this->make_to_bitclout_url( $user, 'post_button' );
 
-		if(isset($this->opt['quickstart']['old_button']) AND $this->opt['quickstart']['old_button']=='yes')
-		{
-			$button=$this->internal['plugin_url'].'images/'."patreon-medium-button.png";
-			$max_width = '200';
-		}
-		else
-		{
-			
-			$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
-			$max_width = '200';
-			
-		}
 		
 		if(isset($this->opt['quickstart']['custom_button']) AND $this->opt['quickstart']['custom_button']!='')
 		{	
@@ -699,7 +729,7 @@ class cb_p8_plugin extends cb_p8_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$append.= 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+					$append.= 'BitClout/Diamond/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 				}
 				else {
 					$append.= '';
@@ -707,7 +737,7 @@ class cb_p8_plugin extends cb_p8_core
 			}
 			else {
 				$append.= $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
-			}			
+			}
 			
 		}
 		else
@@ -715,7 +745,7 @@ class cb_p8_plugin extends cb_p8_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$append.= 'This author has to set his or her BitClout/DiamondApp/DeSo profile url in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/DiamondApp/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s BitClout/DiamondApp/DeSo. Only you as an admin can see this message.';
+					$append.= 'This author has to set his or her BitClout/Diamond/DeSo profile url in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/Diamond/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s BitClout/Diamond/DeSo. Only you as an admin can see this message.';
 				}
 				else {
 					$append.= '';
@@ -750,29 +780,18 @@ class cb_p8_plugin extends cb_p8_core
 		
 
 		$author_id=get_the_author_meta('ID');
-		
-		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
 
-		if($this->opt['quickstart']['force_site_button']=='yes' OR $user=='')
+		if($this->opt['quickstart']['force_site_button']=='yes' OR $author_id=='' OR $author_id == 0 OR $author_id == false)
 		{
-			$user=$this->opt['quickstart']['site_account'];			
+			$author_id=false;
 			
 		}
 		
-		$url = $this->make_to_bitclout_url( $user, 'author_sidebar_widget' );		
+		$url = $this->make_bitclout_profile_url( $author_id, 'author_sidebar_widget' );
 
-		if($this->opt['quickstart']['old_button']=='yes')
-		{
-			$button=$this->internal['plugin_url'].'images/'."patreon-medium-button.png";
-			$max_width = '200';
-		}
-		else
-		{
-			
-			$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
-			$max_width = '200';
-			
-		}
+
+		$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
+		$max_width = 'min-content';
 		
 		if($this->opt['quickstart']['custom_button']!='')
 		{
@@ -802,31 +821,45 @@ class cb_p8_plugin extends cb_p8_core
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$button = 'BitClout/DiamondApp/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
+					$button = 'BitClout/Diamond/DeSo button is not appearing because you have not saved your profile url in Button settings - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save it. Only you as an admin can see this message.';
 				}
 				else {
 					$button = '';
 				}
 			}
 			else {
-				$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
-			}			
 			
+				if ( $this->opt['quickstart']['button_type']=='buy_button') {
+					$button = $this->make_buy_button(false,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				}
+				if ( $this->opt['quickstart']['button_type']=='follow_button') {
+					$button = $this->make_follow_button(false,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+					
+				}
+			}
+		
 		}
 		else
 		{
 
 			if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
 				if ( current_user_can( 'manage_options' ) ) {
-					$button = 'This author has to set his or her BitClout/DiamondApp/DeSo vanity profile name in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/DiamondApp/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s Patreon. Only you as an admin can see this message.';
+					$button = 'This author has to set his or her BitClout/Diamond/DeSo vanity profile name in his profile before widget can link to his profile. Additionally we can\'t show the site BitClout/Diamond/DeSo profile link in its place either because have not saved site profile url in Button settings - either one of them must be saved for the widget to show the link - click <a href="'. admin_url( 'admin.php?page=settings_cb_p8&cb_p8_tab=quickstart' ) .'">here</a> to save site profile name for site\'s Patreon. Only you as an admin can see this message.';
 				}
 				else {
 					$button = '';
 				}
 			}
 			else {
+					
 				
-				$button = $this->make_to_bitclout_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				if ( $this->opt['quickstart']['button_type']=='buy_button') {
+					$button = $this->make_buy_button($author_id,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+				}
+				if ( $this->opt['quickstart']['button_type']=='follow_button') {
+					$button = $this->make_follow_button($author_id,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
+					
+				}
 			}					
 
 		}
@@ -964,11 +997,11 @@ class cb_p8_plugin extends cb_p8_core
 		if ( !$picked_one_goal AND !$no_goals_flag) {
 			
 			// No goals or goals dont exist.
-			$append .= 'All goals accomplished! Thanks!';			
+			$append .= 'All goals accomplished! Thanks!';
 			
 		}
 		
-		$user=$this->opt['quickstart']['site_account'];			
+		$user=$this->opt['quickstart']['site_account'];
 
 		$url = $this->make_to_bitclout_url( $user, 'goals_widget_button' );	
 
@@ -1027,22 +1060,34 @@ class cb_p8_plugin extends cb_p8_core
 		return $append;
 		
 	}
-	public function author_sidebar_widget_message_p($message)
-	{
+	public function author_sidebar_widget_message_p($message) {
 	
 		global $post;
+
 		if($this->opt['quickstart']['force_site_button']=='yes')
 		{
 			$site_name=$bloginfo = get_bloginfo( 'name', 'raw' );
-			$message=str_replace('{authorname}',$site_name,$message);			
+			$message=str_replace('{authorname}',$site_name,$message);
+			$message=str_replace('{node}',$this->opt['quickstart']['node_name'],$message);
+			$message=str_replace('{coin}','$'.$this->opt['quickstart']['user_name'],$message);
 			
 		}
 		else
 		{
 			$author_name=get_the_author_meta('display_name');
+
+			$author_id=get_the_author_meta('ID');
+		
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			
+			
 			$message=str_replace('{authorname}',$author_name,$message);
+			$message=str_replace('{node}',$node_name,$message);
+			$message=str_replace('{coin}','$'.$bitclout_profile,$message);
 		}
-		return $message;			
+		return $message;
 		
 	}
 	public function site_goals_sidebar_widget_message_p($message)
@@ -1075,10 +1120,12 @@ class cb_p8_plugin extends cb_p8_core
 	{
 	
 		$site_name=$bloginfo = get_bloginfo( 'name', 'raw' );
-		$message=str_replace('{sitename}',$site_name,$message);			
-						
+		$message=str_replace('{sitename}',$site_name,$message);
+		$message=str_replace('{node}',$this->opt['quickstart']['node_name'],$message);
+		$message=str_replace('{coin}','$'.$this->opt['quickstart']['user_name'],$message);
 		
-		return $message;			
+		
+		return $message;
 		
 	}
 	
@@ -1094,8 +1141,94 @@ class cb_p8_plugin extends cb_p8_core
 			$new_window='';
 		
 		}
+				
 		
-		return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+		if($this->opt['quickstart']['custom_button']!='') {
+			
+			return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+			
+		}
+		
+		$buy_button_message = str_replace('{coin}','$'.$this->opt['quickstart']['user_name'],$this->lang['buy_button_label']);
+		
+		
+		return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><button class="cb_p8_buy_button" style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$buy_button_message.'</button></a>';
+		
+		
+	}
+	public function make_buy_button_p($author_id=false, $margin=10, $max_width=200, $new_window=false)
+	{
+		if($new_window)
+		{
+			$new_window = ' target="_blank"';
+			
+		}
+		else
+		{
+			$new_window='';
+		
+		}
+		
+		$buy_url = $this->make_bitclout_buy_url( $author_id, $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		$profile_url = $this->make_bitclout_profile_url( $author_id, $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		
+		if ($author_id) {
+			
+
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			
+		}
+		else {
+			
+			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$node_name = $this->opt['quickstart']['node_name'];
+			$node_url = $this->opt['quickstart']['node_url'];
+		}
+		
+		
+		if($this->opt['quickstart']['custom_button']!='') {
+			
+			return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+			
+		}
+		
+		$buy_button_message = str_replace('{coin}','$'.$bitclout_profile,$this->lang['buy_button_label']);
+		$follow_link_message = str_replace('{coin}',''.$bitclout_profile,$this->lang['follow_instead_label']);
+		
+		
+		return '<a rel="nofollow"'.$new_window.' href="'.$buy_url.'/buy"><button class="cb_p8_buy_button" style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$buy_button_message.'</button></a><br /><center><a href="'.$profile_url.'">'.$follow_link_message.'</a></center>';
+		
+		
+	}
+	public function make_follow_button_p($margin=10, $max_width=200, $new_window=false)
+	{
+		if($new_window)
+		{
+			$new_window = ' target="_blank"';
+			
+		}
+		else
+		{
+			$new_window='';
+		
+		}
+		
+		$buy_url = $this->make_bitclout_buy_url( $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		$profile_url = $this->make_bitclout_profile_url( $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		
+		if($this->opt['quickstart']['custom_button']!='') {
+			
+			return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+			
+		}
+		
+		$buy_message = str_replace('{coin}','$'.$this->opt['quickstart']['user_name'],$this->lang['buy_button_label']);
+		$follow_button_message = str_replace('{coin}',''.$this->opt['quickstart']['user_name'],$this->lang['follow_label']);
+		
+		
+		return '<a rel="nofollow"'.$new_window.' href="'.$profile_url.'"><button class="cb_p8_buy_button" style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$follow_button_message.'</button></a><br /><center><a'.$new_window.' href="'.$buy_url.'">'.$buy_message.'</a></center>';
 		
 		
 	}
@@ -1116,32 +1249,57 @@ class cb_p8_plugin extends cb_p8_core
 		
 		
 	}
-	public function make_to_bitclout_url_p( $user, $utm_content )
+	public function make_bitclout_buy_url_p( $author_id, $utm_content )
 	{
-		// wrapper to add some params and filter the url.		
+		// wrapper to add some params and filter the url.
+		if ($author_id) {
+			
+
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			
+		}
+		else {
+			
+			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$node_name = $this->opt['quickstart']['node_name'];
+			$node_url = $this->opt['quickstart']['node_url'];
+		}
+		
+		
 
 		// Lets check if what is saved is an url
-		if(substr($user,0,4)=='http') {
+		if(substr($bitclout_profile,0,4)=='http') {
 			// It is! Load the value to url value
-			$url = $user;
+			$url = $bitclout_profile;
 		}
 		else {
 			
 			// Check if an int user id was dropped in
-			if ( is_numeric( $user ) ) {
+			if ( is_numeric( $bitclout_profile ) ) {
 				// This is a user name/slug. Make the url :
-				$url = 'https://www.patreon.com/user?u='.$user;
+				$url = $node_url .'/u/'.$bitclout_profile;
 				
 			}
 			else {
-				// This is a user id. Make relevant link.
+				// This is a user. Make relevant link.
 				
-				$url = 'https://www.patreon.com/'.$user;
+				$url = $node_url . '/u/'.$bitclout_profile;
 			}
 			
 		}
 		
-		// Add utm params
+		
+		// Diamondapp doesn't support /buy url.
+
+		if (  $node_url != 'https://diamondapp.com' AND $this->opt['quickstart']['force_profile_link'] != 'yes') {
+			
+			// Add utm params
+			$url.='/buy';
+		
+		}
+		
 		
 		$utm_source_url = site_url();
 		
@@ -1154,7 +1312,73 @@ class cb_p8_plugin extends cb_p8_core
 			$utm_source_url =  get_permalink( $post );
 		}
 		
-		$utm_params = 'utm_content=' . $utm_content . '&utm_medium=patron_button_and_widgets_plugin&utm_campaign=' . get_option( 'patreon-campaign-id', '' ) .'&utm_term=&utm_source=' . $utm_source_url;
+		$utm_params = 'utm_content=' . $utm_content . '&utm_medium=dspress&utm_campaign=' . get_site_url() .'&utm_term=&utm_source=' . $utm_source_url;
+		
+		// Simple check to see if creator url has ? (for non vanity urls)
+		$append_with = '?';
+		if ( strpos( $url, '?' ) !== false ) {
+			$append_with = '&';
+		}
+
+		$url .= $append_with . $utm_params;
+		
+		return $url;
+		
+		
+	}
+	public function make_bitclout_profile_url_p( $author_id, $utm_content )
+	{
+		// wrapper to add some params and filter the url.
+		if ($author_id) {
+			
+
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			
+		}
+		else {
+			
+			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$node_name = $this->opt['quickstart']['node_name'];
+			$node_url = $this->opt['quickstart']['node_url'];
+		}
+
+		// Lets check if what is saved is an url
+		if(substr($bitclout_profile,0,4)=='http') {
+			// It is! Load the value to url value
+			$url = $bitclout_profile;
+		}
+		else {
+			
+			// Check if an int user id was dropped in
+			if ( is_numeric( $bitclout_profile ) ) {
+				// This is a user name/slug. Make the url :
+				$url = $node_url .'/u/'.$bitclout_profile;
+				
+			}
+			else {
+				// This is a user. Make relevant link.
+				
+				$url = $node_url . '/u/'.$bitclout_profile;
+			}
+			
+		}
+		
+		// Add utm params
+
+		$utm_source_url = site_url();
+		
+		// Check if this is a post.
+		
+		global $post;
+		
+		if ( $post ) {
+			// Override with content url if there is content
+			$utm_source_url =  get_permalink( $post );
+		}
+		
+		$utm_params = 'utm_content=' . $utm_content . '&utm_medium=dspress&utm_campaign=' . get_site_url() .'&utm_term=&utm_source=' . $utm_source_url;
 		
 		// Simple check to see if creator url has ? (for non vanity urls)
 		$append_with = '?';

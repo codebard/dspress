@@ -1,8 +1,8 @@
 <?php
 /*
-	Plugin Name: Buy Button & Widgets For BitClout, DiamondApp and DeSo
-	Plugin URI: https://wordpress.org/plugins/buy-button-and-widgets-for-bitclout-diamondapp-deso/
-	Description: Add BitClout/DiamondApp/DeSo Buy buttons and widgets to your WordPress website. Supports any DeSo node.
+	Plugin Name: DSPress for BitClout, Diamond & DeSo
+	Plugin URI: https://wordpress.org/plugins/dspress-for-bitclout-diamond-deso/
+	Description: Bring BitClout/Diamond/DeSo features including Buy buttons and widgets to your WordPress website. Send your visitors to buy your tokens at your DeSo node. Supports any DeSo node.
 	Version: 1.0.0
 	Author: CodeBard
 	Author URI: http://codebard.com

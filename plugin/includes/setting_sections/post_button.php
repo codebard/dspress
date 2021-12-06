@@ -104,8 +104,8 @@ echo $this->do_admin_settings_form_header($tab);
 			Right <input type="radio" name="opt[<?php echo $tab; ?>][insert_text_align]" value="right"<?php echo $post_insert_text_align_checked_right; ?>>	
 
 			
-			<h3>Top and Bottom Margin for Patreon Button and Text inside post</h3>
-			This decides how much distance from top and down will entire Patreon addition to your posts will have.<br><br>
+			<h3>Top and Bottom Margin for Buy Button and Text inside post</h3>
+			This decides the distance from top and down will the Buy button to the rest of your post content.<br><br>
 			<input type="text" name="opt[<?php echo $tab; ?>][insert_margin]" value="<?php echo $this->opt[$tab]['insert_margin']; ?>">			
 			
 			<h3>Message over Buttons in Posts</h3>

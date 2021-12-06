@@ -1,4 +1,4 @@
-.cb_p6_reply_wrapper{
+.cb_p8_reply_wrapper{
 	
 	width : 100%;
 	display : inline-table;
@@ -6,13 +6,13 @@
 
 	
 }
-.cb_p6_user_avatar{
+.cb_p8_user_avatar{
 	width : 80px;
 	display : table-cell;
 	text-align : center;
 	vertical-align : top;
 }
-.cb_p6_reply_content_row{
+.cb_p8_reply_content_row{
 	height : 100%;
 	display : table-cell;
 	vertical-align : top;
@@ -21,7 +21,7 @@
 	padding-right: 5px;
 	
 }
-.cb_p6_reply_content{
+.cb_p8_reply_content{
 	height : auto;
 	min-height : 40px;
 	display : inline-block;
@@ -30,7 +30,7 @@
 	
 }
 
-.cb_p6_clearfix:after {
+.cb_p8_clearfix:after {
    content: " "; /* Older browsers do not support empty content - from stackoverflow */
    visibility: hidden;
    display: block;
@@ -39,7 +39,7 @@
 }
 
 
-.cb_p6_clearfix_separator {
+.cb_p8_clearfix_separator {
 	
 	display:block;
 	width :100%;
@@ -49,7 +49,7 @@
 	
 }
 
-.cb_p6_clearfix_separator:after {
+.cb_p8_clearfix_separator:after {
    content: " "; /* Older browsers do not support empty content - from stackoverflow */
    visibility: hidden;
    display: block;
@@ -58,30 +58,30 @@
 }
 
 
-.cb_p6_notice {
+.cb_p8_notice {
     margin: 10px 0px;
     padding:5px;
 	padding-left : 10px;
 	vertical-align : middle;
 }
-.cb_p6_notice-info {
+.cb_p8_notice-info {
     color: #00529B;
     background-color: #BDE5F8;
 }
-.cb_p6_notice-success {
+.cb_p8_notice-success {
     color: #4F8A10;
     background-color: #DFF2BF;
 }
-.cb_p6_notice-warning {
+.cb_p8_notice-warning {
     color: #9F6000;
     background-color: #FEEFB3;
 }
-.cb_p6_notice-error {
+.cb_p8_notice-error {
     color: #D8000C;
     background-color: #FFBABA;
 }
 
-.cb_p6_support_bar{
+.cb_p8_support_bar{
 	display : block;
 	margin-bottom : 25px;
 	text-align : left;
@@ -89,12 +89,12 @@
 	
 	
 }
-.cb_p6_support_bar button{
+.cb_p8_support_bar button{
 	margin:3px;
 	display : inline-block;
 	
 }
-.cb_p6_agent_admin_operations_bar{
+.cb_p8_agent_admin_operations_bar{
 	display : block;
 	margin-bottom : 25px;
 	text-align : center;
@@ -102,23 +102,23 @@
 	
 	
 }
-.cb_p6_agent_admin_operations_bar button{
+.cb_p8_agent_admin_operations_bar button{
 	margin:3px;
 	display : inline-block;
 	
 }
 
-#cb_p6_agent_ticket_header{
+#cb_p8_agent_ticket_header{
 	display :table;
 	width :100%;
 	margin-top : 20px;
 	margin-bottom : 20px;
 }
-.cb_p6_agent_ticket_row{
+.cb_p8_agent_ticket_row{
 	display :table-row;
 	width :100%;
 }
-.cb_p6_agent_ticket_heading{
+.cb_p8_agent_ticket_heading{
 	display :table-cell;
 	width :25%;
 	background-color : #dee1e5;
@@ -126,7 +126,7 @@
 	padding-left : 15px;
 	
 }
-.cb_p6_agent_ticket_cell{
+.cb_p8_agent_ticket_cell{
 	display :table-cell;
 	width :25%;
 	border : 1px solid #c3c5c9;
@@ -136,7 +136,7 @@
 
 }
 
-.cb_p6_ticket_reply_textarea{
+.cb_p8_ticket_reply_textarea{
 	display : inline-block;
 	min-width : 200px;
 	max-width : 500px;
@@ -148,7 +148,7 @@
 	
 }
 
-.cb_p6_agent_ticket_listing_ticket_info{
+.cb_p8_agent_ticket_listing_ticket_info{
 	display : inline-block;
 	width : 100%;
 	margin-top : 5px;
@@ -157,14 +157,14 @@
 	
 }
 
-.cb_p6_agent_ticket_listing_ticket_title_link{
+.cb_p8_agent_ticket_listing_ticket_title_link{
 	font-size : 120%;
 		
 		
 }
 
 
-.cb_p6_agent_ticket_listing_entry{
+.cb_p8_agent_ticket_listing_entry{
 
 	display :inline-block;
 	width : 100%;
@@ -180,7 +180,7 @@
 		
 
 }
-.cb_p6_agent_ticket_listing_entry:hover{
+.cb_p8_agent_ticket_listing_entry:hover{
 	
 	cursor:pointer;
 	background: rgba(0,0,0,.1);
@@ -191,7 +191,7 @@
 
 
 
-.cb_p6_agent_ticket_listing_upper_row_wrapper{
+.cb_p8_agent_ticket_listing_upper_row_wrapper{
 	
 	display:inline-table;
 	width : 100%;
@@ -202,7 +202,7 @@
 }
 
 
-.cb_p6_agent_ticket_listing_ticket_title{
+.cb_p8_agent_ticket_listing_ticket_title{
 	
 	display:inline-block;
 	width : 80%;
@@ -212,7 +212,7 @@
 	
 }
 
-.cb_p6_agent_ticket_listing_view_ticket_button{
+.cb_p8_agent_ticket_listing_view_ticket_button{
 	
 	display:inline-block;
 	width : auto;
@@ -224,7 +224,7 @@
 }
 
 
-.cb_p6_user_ticket_listing_ticket_info{
+.cb_p8_user_ticket_listing_ticket_info{
 	display : inline-block;
 	width : 100%;
 	margin-top : 5px;
@@ -233,14 +233,14 @@
 	
 }
 
-.cb_p6_user_ticket_listing_ticket_title_link{
+.cb_p8_user_ticket_listing_ticket_title_link{
 	font-size : 120%;
 		
 		
 }
 
 
-.cb_p6_user_ticket_listing_entry{
+.cb_p8_user_ticket_listing_entry{
 
 	display :inline-block;
 	width : 100%;
@@ -257,7 +257,7 @@
 		
 
 }
-.cb_p6_user_ticket_listing_entry:hover{
+.cb_p8_user_ticket_listing_entry:hover{
 	
 	cursor:pointer;
 	background: rgba(0,0,0,.1);
@@ -268,7 +268,7 @@
 
 
 
-.cb_p6_user_ticket_listing_upper_row_wrapper{
+.cb_p8_user_ticket_listing_upper_row_wrapper{
 	
 	display:inline-table;
 	width : 100%;
@@ -279,7 +279,7 @@
 }
 
 
-.cb_p6_user_ticket_listing_ticket_title{
+.cb_p8_user_ticket_listing_ticket_title{
 	
 	display:inline-block;
 	width : 80%;
@@ -289,7 +289,7 @@
 	
 }
 
-.cb_p6_user_ticket_listing_view_ticket_button{
+.cb_p8_user_ticket_listing_view_ticket_button{
 	
 	display:inline-block;
 	width : auto;
@@ -303,7 +303,7 @@
 
 
 
-.cb_p6_agent_updated_since_last_visit{
+.cb_p8_agent_updated_since_last_visit{
 	
 	background: rgba(54,198,35,.1);
 	
@@ -312,7 +312,7 @@
 
 
 
-.cb_p6_separator{
+.cb_p8_separator{
 	
    content: " "; /* Older browser do not support empty content */
    visibility: hidden;
@@ -325,7 +325,7 @@
 }
 
 
-.cb_p6_quick_reply_button{
+.cb_p8_quick_reply_button{
 	
 	display:inline-block;
 	margin-top : 10px;
@@ -334,7 +334,7 @@
 	
 }
 
-.cb_p6_quick_reply_button{
+.cb_p8_quick_reply_button{
 	
 	display:inline-block;
 	margin-top : 10px;
@@ -344,12 +344,12 @@
 }
 
 
-.cb_p6_ticket_attachment{
+.cb_p8_ticket_attachment{
 	
 	font-size : 75%;
 	
 }
-.cb_p6_ticket_attachment_label{
+.cb_p8_ticket_attachment_label{
 	
 	font-size : 75%;
 	margin-right : 10px;
@@ -357,7 +357,7 @@
 	
 }
 
-.cb_p6_reply_attachments{
+.cb_p8_reply_attachments{
 	
 	width : 100%;
 	display:inline-block;
@@ -366,14 +366,14 @@
 	padding-top : 10px;
 	
 }
-.cb_p6_reply_attachments img{
+.cb_p8_reply_attachments img{
 	
 	max-width : 300px;
 	
 	
 }
 
-.cb_p6_ticket_status_button_container {
+.cb_p8_ticket_status_button_container {
 	
 	display : inline-block;
 	max-height : 60px;
@@ -382,7 +382,7 @@
 }
 
 
-.cb_p6_ticket_status_label {
+.cb_p8_ticket_status_label {
 	
 	
 	display : inline-block;
@@ -394,7 +394,7 @@
 	
 }
 
-.cb_p6_ticket_status_row {
+.cb_p8_ticket_status_row {
 	
 	
 	display : inline-block;
@@ -404,7 +404,7 @@
 	
 }
 
-#cb_p6_department_select {
+#cb_p8_department_select {
 	
 	
 	display : inline-block;
@@ -414,14 +414,14 @@
 	
 	
 }
-#cb_p6_department_select select {
+#cb_p8_department_select select {
 	
 	font-size : 125%;
 	
 	
 }
 
-#cb_p6_create_ticket_form {
+#cb_p8_create_ticket_form {
 	
 	display:inline-block;
 	margin-bottom : 20px;
@@ -429,7 +429,7 @@
 	
 }
 
-.cb_p6_ticket_listing_header {
+.cb_p8_ticket_listing_header {
 	
 	display:block;
 	margin-bottom : 20px;
@@ -438,5 +438,26 @@
 	padding-right : 5px;
 	
 	
+}
+
+
+.cb_p8_buy_button {
+	
+	display:inline-block;
+	margin : 10px;
+	padding: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	background-color: #097efc;
+	color: #ffffff;
+	width: min-content;
+	white-space: nowrap;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+.cb_p8_buy_button:hover {
+	
+	background-color: #006bde !important;
 }
 

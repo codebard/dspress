@@ -1,6 +1,6 @@
 <?php
 
-class cb_p6_dud_language_object {
+class cb_p8_dud_language_object {
 	
 	public $internal = array(
 
@@ -101,33 +101,33 @@ class cb_p6_dud_language_object {
 	}
 }
 
-class cb_p6_sidebar_user_widget extends WP_Widget {
-	public $cb_p6 = '';
+class cb_p8_sidebar_user_widget extends WP_Widget {
+	public $cb_p8 = '';
     public function __construct() {
 		
-		global $cb_p6;
+		global $cb_p8;
 		
-		if( !isset( $cb_p6 ) ) {
+		if( !isset( $cb_p8 ) ) {
 			// If plugin is not initialized, we may be in wp-cli or some other tool that accessed this file without initiating this plugin. Use a dud object to replace it:
 			
-			$this->cb_p6 = new cb_p6_dud_language_object();
+			$this->cb_p8 = new cb_p8_dud_language_object();
 			// Get options 
-			$this->cb_p6->internal['prefix']='cb_p6';
-			$this->cb_p6->opt=get_option($this->cb_p6->internal['prefix'].'options');	
-			$this->cb_p6->internal = $this->cb_p6->load_internal_vars();
+			$this->cb_p8->internal['prefix']='cb_p8';
+			$this->cb_p8->opt=get_option($this->cb_p8->internal['prefix'].'options');
+			$this->cb_p8->internal = $this->cb_p8->load_internal_vars();
 		}
 		else {
-			$this->cb_p6=$cb_p6;			
+			$this->cb_p8=$cb_p8;
 		}
 		
 		
 		// Load language from db
-		$this->cb_p6->lang = $this->cb_p6->load_language();
+		$this->cb_p8->lang = $this->cb_p8->load_language();
 
         parent::__construct(
-            'patreon_sidebar_user_widget', // Base ID
-             $this->cb_p6->lang['sidebar_user_widget_name'], // Name
-            array( 'description' => $this->cb_p6->lang['sidebar_user_widget_desc'] ) // Args
+            'deso_sidebar_user_widget', // Base ID
+             $this->cb_p8->lang['sidebar_user_widget_name'], // Name
+            array( 'description' => $this->cb_p8->lang['sidebar_user_widget_desc'] ) // Args
         );
     }
  
@@ -141,9 +141,9 @@ class cb_p6_sidebar_user_widget extends WP_Widget {
 		
 		}
 		
-		global $cb_p6;
+		global $cb_p8;
         extract( $args );
-        $title 		= apply_filters('widget_title', $instance['title']);
+        $title = apply_filters('widget_title', $instance['title']);
 		  $message 	= $instance['message'];
         ?>
               <?php echo $before_widget; ?>
@@ -154,18 +154,18 @@ class cb_p6_sidebar_user_widget extends WP_Widget {
 									
 								
 								?>
-									<div style="text-align: <?php echo $this->cb_p6->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p6->author_sidebar_widget_message($message); ?></div>
+									<div style="text-align: <?php echo $this->cb_p8->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p8->author_sidebar_widget_message($message); ?></div>
 								
-	<?php echo $this->cb_p6->author_sidebar_widget(); ?>
+	<?php echo $this->cb_p8->author_sidebar_widget(); ?>
 							
      
-						
+
               <?php echo $after_widget; ?>
         <?php
     }
  
     /** @see WP_Widget::update -- do not rename this */
-    function update($new_instance, $old_instance) {		
+    function update($new_instance, $old_instance) {
 		$instance = $old_instance;
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['message'] = strip_tags($new_instance['message']);
@@ -174,8 +174,8 @@ class cb_p6_sidebar_user_widget extends WP_Widget {
  
     /** @see WP_Widget::form -- do not rename this */
     function form($instance) {	
-		global $cb_p6;
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$this->cb_p6->lang['sidebar_author_widget_message'] ) );
+		global $cb_p8;
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$this->cb_p8->lang['sidebar_author_widget_message'] ) );
         $title 		= esc_attr($instance['title']);
         $message	= esc_attr($instance['message']);
         ?>
@@ -184,60 +184,60 @@ class cb_p6_sidebar_user_widget extends WP_Widget {
           <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
         </p>
 		<p>
-          <label for="<?php echo $this->get_field_id('message'); ?>"><?php echo $this->cb_p6->lang['message_over_button'] ?></label> 
+          <label for="<?php echo $this->get_field_id('message'); ?>"><?php echo $this->cb_p8->lang['message_over_button'] ?></label> 
           <input class="widefat" id="<?php echo $this->get_field_id('message'); ?>" name="<?php echo $this->get_field_name('message'); ?>" type="text" value="<?php echo $message ?>" />
         </p>
 		<p>
-          <?php echo $this->cb_p6->author_sidebar_widget(); ?>
+          <?php echo $this->cb_p8->author_sidebar_widget(); ?>
         </p>		
 		
         <?php 
     }
-	
+
 
 
 }
 
 
-class cb_p6_sidebar_site_widget extends WP_Widget {
+class cb_p8_sidebar_site_widget extends WP_Widget {
  
  
     /** constructor -- name this the same as the class above */
     public function __construct() {
 		
-		global $cb_p6;
+		global $cb_p8;
 		
-		if( !isset( $cb_p6 ) ) {
+		if( !isset( $cb_p8 ) ) {
 			// If plugin is not initialized, we may be in wp-cli or some other tool that accessed this file without initiating this plugin. Use a dud object to replace it:
 			
-			$this->cb_p6 = new cb_p6_dud_language_object();
+			$this->cb_p8 = new cb_p8_dud_language_object();
 			// Get options 
-			$this->cb_p6->internal['prefix']='cb_p6';
-			$this->cb_p6->opt=get_option($this->cb_p6->internal['prefix'].'options');	
-			$this->cb_p6->internal = $this->cb_p6->load_internal_vars();
+			$this->cb_p8->internal['prefix']='cb_p8';
+			$this->cb_p8->opt=get_option($this->cb_p8->internal['prefix'].'options');
+			$this->cb_p8->internal = $this->cb_p8->load_internal_vars();
 		}
 		else {
-			$this->cb_p6=$cb_p6;			
+			$this->cb_p8=$cb_p8;
 		}
 		
 		
 		// Load language from db
-		$this->cb_p6->lang = $this->cb_p6->load_language();
+		$this->cb_p8->lang = $this->cb_p8->load_language();
 		
         parent::__construct(
-            'patreon_sidebar_site_widget', // Base ID
-             $this->cb_p6->lang['sidebar_site_widget_name'], // Name
-            array( 'description' => $this->cb_p6->lang['sidebar_site_widget_desc'] ) // Args
+            'deso_sidebar_site_widget', // Base ID
+             $this->cb_p8->lang['sidebar_site_widget_name'], // Name
+            array( 'description' => $this->cb_p8->lang['sidebar_site_widget_desc'] ) // Args
         );
     }
  
     /** @see WP_Widget::widget -- do not rename this */
     function widget($args, $instance) 
 	{	
-		global $cb_p6;
+		global $cb_p8;
 		
 		
-	    if( $this->cb_p6->opt['sidebar_widgets']['hide_site_widget_on_single_post_page']=='yes' AND is_singular('post'))
+	    if( $this->cb_p8->opt['sidebar_widgets']['hide_site_widget_on_single_post_page']=='yes' AND is_singular('post'))
 		{
 			// Dont show the site widget on single post page 
 			return;
@@ -255,10 +255,10 @@ class cb_p6_sidebar_site_widget extends WP_Widget {
 								<?php if($message!='')
 								{
 								?>
-								<div style="text-align: <?php echo $this->cb_p6->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p6->site_sidebar_widget_message($message); ?></div>
+								<div style="text-align: <?php echo $this->cb_p8->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p8->site_sidebar_widget_message($message); ?></div>
 								<?php } ?>
 							
-          <?php echo $this->cb_p6->site_sidebar_widget(); ?>
+          <?php echo $this->cb_p8->site_sidebar_widget(); ?>
      
 						
               <?php echo $after_widget; ?>
@@ -275,8 +275,14 @@ class cb_p6_sidebar_site_widget extends WP_Widget {
  
     /** @see WP_Widget::form -- do not rename this */
     function form($instance) {	
-		global $cb_p6;
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$this->cb_p6->lang['sidebar_site_widget_message'] ) );
+		global $cb_p8;
+		
+		$button_message = $this->cb_p8->lang['sidebar_site_widget_message'];
+		if ($this->cb_p8->opt['quickstart']['button_type'] == 'follow_button') {
+			$button_message = $this->cb_p8->lang['sidebar_site_widget_message_follow'];
+		}
+		
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$button_message ) );
         $title 		= esc_attr($instance['title']);
         $message	= esc_attr($instance['message']);
         ?>
@@ -285,11 +291,11 @@ class cb_p6_sidebar_site_widget extends WP_Widget {
           <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
         </p>
 		<p>
-          <label for="<?php echo $this->get_field_id('message'); ?>"><?php echo $cb_p6->lang['message_over_button'] ?></label> 
+          <label for="<?php echo $this->get_field_id('message'); ?>"><?php echo $cb_p8->lang['message_over_button'] ?></label> 
           <input class="widefat" id="<?php echo $this->get_field_id('message'); ?>" name="<?php echo $this->get_field_name('message'); ?>" type="text" value="<?php echo $message ?>" />
         </p>
 		<p>
-          <?php echo $this->cb_p6->site_sidebar_widget(); ?>
+          <?php echo $this->cb_p8->site_sidebar_widget(); ?>
         </p>		
 		
         <?php 
@@ -298,33 +304,33 @@ class cb_p6_sidebar_site_widget extends WP_Widget {
 
 }
 
-class cb_p6_sidebar_goals_site_widget extends WP_Widget {
-	public $cb_p6 = '';
+class cb_p8_sidebar_goals_site_widget extends WP_Widget {
+	public $cb_p8 = '';
     public function __construct() {
 		
-		global $cb_p6;
+		global $cb_p8;
 		
-		if( !isset( $cb_p6 ) ) {
+		if( !isset( $cb_p8 ) ) {
 			// If plugin is not initialized, we may be in wp-cli or some other tool that accessed this file without initiating this plugin. Use a dud object to replace it:
 			
-			$this->cb_p6 = new cb_p6_dud_language_object();
+			$this->cb_p8 = new cb_p8_dud_language_object();
 			// Get options 
-			$this->cb_p6->internal['prefix']='cb_p6';
-			$this->cb_p6->opt=get_option($this->cb_p6->internal['prefix'].'options');	
-			$this->cb_p6->internal = $this->cb_p6->load_internal_vars();
+			$this->cb_p8->internal['prefix']='cb_p8';
+			$this->cb_p8->opt=get_option($this->cb_p8->internal['prefix'].'options');	
+			$this->cb_p8->internal = $this->cb_p8->load_internal_vars();
 		}
 		else {
-			$this->cb_p6=$cb_p6;			
+			$this->cb_p8=$cb_p8;			
 		}
 		
 		
 		// Load language from db
-		$this->cb_p6->lang = $this->cb_p6->load_language();
+		$this->cb_p8->lang = $this->cb_p8->load_language();
 
         parent::__construct(
-            'patreon_sidebar_goals_site_widget', // Base ID
-             $this->cb_p6->lang['sidebar_goals_site_widget'], // Name
-            array( 'description' => $this->cb_p6->lang['sidebar_goals_site_widget_desc'] ) // Args
+            'deso_sidebar_goals_site_widget', // Base ID
+             $this->cb_p8->lang['sidebar_goals_site_widget'], // Name
+            array( 'description' => $this->cb_p8->lang['sidebar_goals_site_widget_desc'] ) // Args
         );
     }
  
@@ -333,7 +339,7 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
     function widget($args, $instance) {	
 	
 		
-		global $cb_p6;
+		global $cb_p8;
         extract( $args );
         $title 		= apply_filters('widget_title', $instance['title']);
 		  $message 	= $instance['message'];
@@ -346,9 +352,9 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 									
 								
 								?>
-									<div style="text-align: <?php echo $this->cb_p6->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p6->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p6->site_goals_sidebar_widget_message($message); ?></div>
+									<div style="text-align: <?php echo $this->cb_p8->opt['sidebar_widgets']['insert_text_align']; ?> !important;font-size: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_font_size']; ?>;margin-top: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;margin-bottom: <?php echo $this->cb_p8->opt['sidebar_widgets']['message_over_post_button_margin']; ?>;"><?php echo $this->cb_p8->site_goals_sidebar_widget_message($message); ?></div>
 								
-	<?php echo $this->cb_p6->site_goals_sidebar_widget(); ?>
+	<?php echo $this->cb_p8->site_goals_sidebar_widget(); ?>
 							
      
 						
@@ -366,12 +372,13 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
  
     /** @see WP_Widget::form -- do not rename this */
     function form($instance) {	
-		global $cb_p6;
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$this->cb_p6->lang['sidebar_author_widget_message'] ) );
+		global $cb_p8;
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'message'=>$this->cb_p8->lang['sidebar_author_widget_message'] ) );
         $title 		= esc_attr($instance['title']);
         $message	= esc_attr($instance['message']);
 				
-		if( class_exists( 'Patreon_Wordpress' ) ) {
+		// For future pro addon
+		if( class_exists( 'dspress_pro' ) ) {
 			
 				// Show a notice if setup was not done
 				$setup_done = get_option( 'patreon-setup-done', false );
@@ -402,7 +409,7 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 						?>
 						<p>
 						<?php
-						echo $this->cb_p6->lang['pw_install_message_10'];
+						echo $this->cb_p8->lang['pw_install_message_10'];
 						?>
 						</p>
 						<?php
@@ -425,7 +432,7 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 					Widget preview:
 					</p>
 					<p>
-					  <?php echo $this->cb_p6->site_goals_sidebar_widget(); ?>
+					  <?php echo $this->cb_p8->site_goals_sidebar_widget(); ?>
 					</p>
 					<?php
 						if ( !is_plugin_active( 'patron-plugin-pro/index.php' ) ) {
@@ -433,7 +440,7 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 					?>	
 						<hr>
 						<p>
-						<?php echo $this->cb_p6->lang['new_patreon_widget_message_in_widget_desc']; ?>
+						<?php echo $this->cb_p8->lang['new_patreon_widget_message_in_widget_desc']; ?>
 						</p>
 						
 						<?php
@@ -449,7 +456,7 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 			 ?>
 			 <p>
 			 <?php
-				echo $this->cb_p6->lang['goals_widget_require_pw'];
+				echo $this->cb_p8->lang['goals_widget_require_pw'];
 			?>
 			</p>
 			
@@ -461,16 +468,15 @@ class cb_p6_sidebar_goals_site_widget extends WP_Widget {
 	
 }
 
-function cb_p6_register_widgets()
+function cb_p8_register_widgets()
 {
 
-	register_widget( 'cb_p6_sidebar_user_widget' );
-	register_widget( 'cb_p6_sidebar_site_widget' );
-	register_widget( 'cb_p6_sidebar_goals_site_widget' );
+	register_widget( 'cb_p8_sidebar_user_widget' );
+	register_widget( 'cb_p8_sidebar_site_widget' );
 
 }
 
-add_action('widgets_init', 'cb_p6_register_widgets');
+add_action('widgets_init', 'cb_p8_register_widgets');
 
 
 ?>
