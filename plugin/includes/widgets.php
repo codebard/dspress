@@ -42,7 +42,7 @@ class cb_p8_dud_language_object {
 		}
 		else
 		{
-			$lang = 'en-US';			
+			$lang = 'en-US';
 		}		
 		
 		$lang_file = __DIR__ . '/../../plugin/includes/languages/'.$lang.'.php';
@@ -88,7 +88,7 @@ class cb_p8_dud_language_object {
 	{
 		// Does nothing but wrap update_options for options:
 		
-		return update_option($this->internal['prefix'].'options',$this->opt);		
+		return update_option($this->internal['prefix'].'options',$this->opt);
 
 		
 	}

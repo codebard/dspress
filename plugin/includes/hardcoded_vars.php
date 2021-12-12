@@ -20,10 +20,6 @@ $this->hardcoded = array(
 		),
 		
 		
-		
-		
-		
-		
 );
 
 

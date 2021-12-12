@@ -97,12 +97,22 @@ echo $this->do_admin_settings_form_header($tab);
 		
 		}
 		
-		
-		
 ?>
 			<h3>Site's BitClout / Diamond / DeSo Node profile</h3>
 			If you chose not to use profile of Authors for each author, or an Author does not have any profile saved in his/her author profile page, this profile will be used for Buttons for users in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author sidebar widget</b>.<br><br>
 			<input type="text" style="width : 500px" name="opt[<?php echo $tab; ?>][site_account]" value="<?php echo $this->opt[$tab]['site_account']; ?>"><br><br>
+			
+			<h3>Button background color</h3>
+			The background color of buttons used in widgets and call to actions. The default color is 'DeSo blue'. But if this doesn't suit your site, pick a new color that does. Just click inside the input box below and a color picker will appear.<br><br>
+			<input id="cb_p8_button_color" class="cb_p8-color-picker" name="opt[<?php echo $tab; ?>][button_color]" type="text" value="<?php echo $this->opt[$tab]['button_color']; ?>" /><br><br>
+			
+			<h3>Button hover color</h3>
+			If you changed the button background color, you should change the hover color for the button so it will fit the new color you have set for the button. Just click inside the input box below and a color picker will appear.<br><br>
+			<input id="cb_p8_button_color" class="cb_p8-color-picker" name="opt[<?php echo $tab; ?>][button_hover_color]" type="text" value="<?php echo $this->opt[$tab]['button_color']; ?>" /><br><br>
+			
+			<h3>Button text color</h3>
+			The text color of buttons used in widgets and call to actions. The default color is white. Just click inside the input box below and a color picker will appear.<br><br>
+			<input id="cb_p8_button_color" class="cb_p8-color-picker" name="opt[<?php echo $tab; ?>][button_text_color]" type="text" value="<?php echo $this->opt[$tab]['button_text_color']; ?>" /><br><br>
 			
 			
 			<h3>Use Buy buttons or Follow buttons</h3>
@@ -146,7 +156,7 @@ echo $this->do_admin_settings_form_header($tab);
 			You can use a custom image for your button! Just click on below field to be taken to your WordPress media library to select your button or upload a new button and select that one. After selecting your button, save options and your new custom button will be made active.
 			
 			<br><br>			
-			 <input class="cb_p6_file_upload" type="text" id="opt[<?php echo $tab; ?>]_custom_button" size="36" name="opt[<?php echo $tab; ?>][custom_button]" value="<?php echo $this->opt[$tab]['custom_button']; ?>" /> <a href="" class="cb_p6_clear_prevfield">Clear</a>
+			 <input class="cb_p8_file_upload" type="text" id="opt[<?php echo $tab; ?>]_custom_button" size="36" name="opt[<?php echo $tab; ?>][custom_button]" value="<?php echo $this->opt[$tab]['custom_button']; ?>" /> <a href="" class="cb_p8_clear_prevfield">Clear</a>
 		<br><br>
 		Current custom button :
 		<br>

@@ -448,16 +448,8 @@
 	padding: 10px;
 	padding-left: 20px;
 	padding-right: 20px;
-	background-color: #097efc;
-	color: #ffffff;
 	width: min-content;
 	white-space: nowrap;
 	font-weight: bold;
 	font-size: 120%;
 }
-
-.cb_p8_buy_button:hover {
-	
-	background-color: #006bde !important;
-}
-

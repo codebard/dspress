@@ -1,6 +1,6 @@
 ===  DSPress for BitClout, Diamond & DeSo ===
 Author URI: http://codebard.com
-Plugin URI: https://wordpress.org/plugins/dspress-for-bitclout-diamond-deso/
+Plugin URI: https://wordpress.org/plugins/dspress/
 Contributors: CodeBard
 Donate link: http://codebard.com/donate
 Tags: plugins, patreon, widgets, crowdfunding, crowdfund, crowd fund, crowd funding, sponsor, donate, donations, donation, charity, fundraising, charities, sponsorship, sponsorships, campaign, campaigns, giving, peer to peer, peer to peer fundraising, fundraiser, peer to peer fundraiser, non profit, non profits, income, money, subscription, social, rewards, kickstart

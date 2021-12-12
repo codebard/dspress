@@ -1,4 +1,4 @@
-#cb_p6_admin_settings_form_footer{
+#cb_p8_admin_settings_form_footer{
 	
 	clear:both;
 	display:block;
@@ -9,7 +9,7 @@
 }
 
 
-.cb_p6_admin_separator
+.cb_p8_admin_separator
 {
 
 clear : both; 
@@ -22,14 +22,14 @@ min-height:2px;
 
 }
 
-.cb_p6_admin_form
+.cb_p8_admin_form
 {
 
 font-size : 125%;
 
 }
 
-.cb_p6_admin_segment2
+.cb_p8_admin_segment2
 {
 
 font-size : 125%;
@@ -41,7 +41,7 @@ padding-left:10px;
 vertical-align : top;
 }
 
-.cb_p6_admin_segment1
+.cb_p8_admin_segment1
 {
 
 font-size : 125%;
@@ -51,7 +51,7 @@ margin-bottom:10px;
 padding-left:10px;
 vertical-align : top;
 }
-.cb_p6_logo_div
+.cb_p8_logo_div
 {
 vertical-align : middle;
 display : inline-block;
@@ -60,7 +60,7 @@ padding-top:10px;
 }
 
 
-.cb_p6_h1
+.cb_p8_h1
 {
 font-size: 175%;
 color:#36578F;
@@ -71,7 +71,7 @@ font-weight:bold;
 }
 
 
-.cb_p6_h2
+.cb_p8_h2
 {
 	font-size: 125%;
 	color:#36578F;
@@ -82,7 +82,7 @@ font-weight:bold;
 }
 
 
-.cb_p6_h3
+.cb_p8_h3
 {
 	font-size: 100%;
 	color:#36578F;
@@ -92,7 +92,7 @@ font-weight:bold;
 	font-weight:bold;
 }
 
-.cb_p6_license
+.cb_p8_license
 {
 
 	display:inline-block;
@@ -102,7 +102,7 @@ font-weight:bold;
 }
 
 
-.cb_p6_admin_button
+.cb_p8_admin_button
 {
 font-size: 125%;
 background-color:#2c5089;
@@ -116,20 +116,20 @@ font-weight:bold;
 border:0px;
 margin : 3px;
 }
-.cb_p6_admin_info
+.cb_p8_admin_info
 {
 font-size : 125%;
 display:inline-block;
 margin-top : 15px;
 margin-bottom : 15px;
 }
-.cb_p6_admin_button:hover
+.cb_p8_admin_button:hover
 {
 background-color:#305ba0;
 cursor: pointer;
 }
 
-.cb_p6_admin_product_box {
+.cb_p8_admin_product_box {
 background-color : #2d4b7c; 
 border: 1px solid #CCCCCC; 
 padding : 5px; 
@@ -150,7 +150,7 @@ margin-left : 20px;
 	
 }
 
-.cb_p6_admin_support_admin_staff_name{
+.cb_p8_admin_support_admin_staff_name{
 display:inline-block; 
 font-size: 14px; 
 font-weight:bold; 
@@ -159,21 +159,21 @@ margin-left : 20px;
 }
 
 
-.cb_p6_inline_block_form{
+.cb_p8_inline_block_form{
 	display:inline-block;
 	
 	
 }
 
 
-.cb_p6_settings{
+.cb_p8_settings{
 	
 display:block;
 margin-top :20px;	
 	
 	
 }
-.cb_p6__option_info{
+.cb_p8__option_info{
 	
 display:block;
 margin-bottom :10px;	
@@ -188,7 +188,7 @@ margin-bottom :10px;
 	
 }
 
-.cb_p6_option_info{
+.cb_p8_option_info{
 	
 	display :block;
 	
@@ -197,7 +197,7 @@ margin-bottom :10px;
 	width : 100%;
 	
 }
-#cb_p6_setup_wizard_header{
+#cb_p8_setup_wizard_header{
 	
 font-size:175%;
 font-weight:bold;
@@ -206,7 +206,7 @@ display:inline-table;
 width:100%;
 	
 }
-.cb_p6_setup_wizard_big_heading{
+.cb_p8_setup_wizard_big_heading{
 	
 font-size:150%;
 font-weight:bold;
@@ -216,7 +216,7 @@ display:inline-table;
 width:100%;
 	
 }
-.cb_p6_setup_wizard_small_heading{
+.cb_p8_setup_wizard_small_heading{
 	
 font-size:125%;
 font-weight:bold;
@@ -226,7 +226,7 @@ display:table-cell;
 width:100%;
 	
 }
-.cb_p6_setup_wizard_col_50{
+.cb_p8_setup_wizard_col_50{
 	
 font-size:125%;
 font-weight:bold;
@@ -234,7 +234,7 @@ display:table-cell;
 width:50%;
 	
 }
-.cb_p6_setup_wizard_two_col{
+.cb_p8_setup_wizard_two_col{
 	
 font-weight:bold;
 margin-top:10px;
@@ -244,7 +244,7 @@ width:100%;
 max-width : 800px;
 	
 }
-.cb_p6_setup_wizard_col_33{
+.cb_p8_setup_wizard_col_33{
 	
 font-size:125%;
 font-weight:bold;
@@ -252,7 +252,7 @@ display:table-cell;
 width:33%;
 	
 }
-.cb_p6_setup_wizard_three_col{
+.cb_p8_setup_wizard_three_col{
 	
 font-weight:bold;
 margin-top:10px;
@@ -369,21 +369,21 @@ max-width : 800px;
 	
 }
 
-.cb_p6_setup_wizard_big_font{
+.cb_p8_setup_wizard_big_font{
 	
 	font-size:135%;
 	font-weight:bold;
 	
 }
 
-.cb_p6_img_div {
+.cb_p8_img_div {
 	
 	width : 75px;
 	
 	
 }
 
-.cb_p6_img_div img{
+.cb_p8_img_div img{
 	
 	width : 100%;
 	height : auto;
@@ -391,7 +391,7 @@ max-width : 800px;
 	
 	
 }
-.cb_p6_pro_pitch {
+.cb_p8_pro_pitch {
 	
 	width : 100%;
 	height : auto;
@@ -405,18 +405,18 @@ font-weight:bold;
 }
 
 
-#cb_p6_setup_modal{
+#cb_p8_setup_modal{
 	
 	display:none;
 }
 
-#cb_p6_pro_pitch_modal{
+#cb_p8_pro_pitch_modal{
 	
 	display:none;
 }
 
 
-#cb_p6_admin_message_screen {
+#cb_p8_admin_message_screen {
 
 	display:block;
 	clear: both;

@@ -8,7 +8,7 @@ $this->internal = array_replace_recursive(
 	array(
 		
 		'id' => 'cb_p8',
-		'plugin_id' => 'dspress-for-bitclout-diamond-deso',
+		'plugin_id' => 'dspress',
 		'prefix' => 'cb_p8_',
 		'version' => '1.0.0',
 		'plugin_name' => 'DSPress for BitClout, Diamond & DeSo',
