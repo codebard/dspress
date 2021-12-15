@@ -25,6 +25,7 @@ class cb_p8_plugin extends cb_p8_core
 		add_action( 'wp_head', array( &$this, 'styles_in_head' ) );
 		add_action( 'init', array( &$this, 'check_plugin_activation_date_for_existing_installs' ) );
 		add_action('admin_init',array(&$this,'check_redirect_to_setup_wizard'),99);
+		add_filter( 'cb_p8_filter_vars_before_save_settings', array( &$this, 'filter_settings' ),60);
 		
 	}
 	public function add_admin_menus_p()
@@ -38,15 +39,15 @@ class cb_p8_plugin extends cb_p8_core
 	}
 	public function admin_init_p() {
 		
-		// Updates are important - Add update nag if update exist
-		add_filter( 'pre_set_site_transient_update_plugins', array(&$this, 'check_for_update' ),99 );
-		add_filter( 'pre_set_site_transient_update_plugins', array(&$this, 'check_for_update' ),99 );
 		// add_action( 'admin_enqueue_scripts',  array(&$this, 'load_pointers' ) );
 		// add_filter( $this->internal['prefix'].'admin_pointers-dashboard', array( &$this, 'widgets_pointer' ) );
 		add_action( 'cb_p8_action_before_do_admin_page_tabs', array( &$this, 'pro_pitch' ) );
 		add_action( 'wp_ajax_cb_p8_dismiss_admin_notice', array( $this, 'dismiss_admin_notice' ), 10, 1 );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_color_picker' ), 10, 1 );
+		
+		
+		
 
 		/* Old Widget notice  - can be used to show new notices.
 	   if(!isset($this->opt['widget_update_notice_shown']) AND !$this->opt['setup_is_being_done']) {
@@ -180,9 +181,12 @@ class cb_p8_plugin extends cb_p8_core
 			return;
 		}
 		// If setup was not done, redirect to wizard
-		if(($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/Diamond/DeSo profile link here' OR !$this->opt['setup_done']) AND !isset($_REQUEST['setup_stage']))
+		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/Diamond/DeSo profile link here' OR (!$this->opt['setup_done'] AND !isset($_REQUEST['setup_stage'])) )
 		{
 
+			if ( $this->internal['redirected_to_setup_once'] ) {
+				return;
+			}
 			$this->opt['setup_is_being_done']=true;
 			$this->update_opt();
 			
@@ -191,14 +195,14 @@ class cb_p8_plugin extends cb_p8_core
 			
 			// Toggle redirect flag off. If the user skips the wizard we will just show a notice in admin and not force subsequent redirections
 			update_option( 'cb_p8_redirect_to_setup_wizard', false );
-			
+
 			wp_redirect( admin_url( 'admin.php?page=cb_p8_setup_wizard&setup_stage=0') );
 			
 			
 			return;
 				
 		}
-
+		/*
 		// If setup was not done, redirect to wizard
 		if(!$this->opt['pro_pitch_done'] AND !isset($_REQUEST['setup_stage']))
 		{
@@ -209,7 +213,7 @@ class cb_p8_plugin extends cb_p8_core
 			// $this->queue_modal('pro_pitch');
 			
 		}
-		
+		*/
 		
 	}
 	public function enqueue_frontend_styles_p()
@@ -223,6 +227,11 @@ class cb_p8_plugin extends cb_p8_core
 		if($current_screen->base=='toplevel_page_settings_'.$this->internal['id'] OR ( isset( $_REQUEST['page']) AND $_REQUEST['page']== 'cb_p8_install_pw' ) )
 		{
 			wp_enqueue_style( $this->internal['id'].'-css-admin', $this->internal['plugin_url'].'plugin/includes/css/admin.css' );
+			
+		}
+		if( $_REQUEST['setup_stage'] == '1' )
+		{
+			wp_enqueue_style( $this->internal['id'].'-css-mailchimp', 'https://cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7_dtp.css' );
 			
 		}
 	}
@@ -277,7 +286,7 @@ class cb_p8_plugin extends cb_p8_core
 		if(!isset($this->internal['content_filter_queued']))
 		{
 			$this->internal['content_filter_queued']=true;
-			add_filter('the_content', array(&$this, 'content_filters'));		
+			add_filter('the_content', array(&$this, 'content_filters'));
 		}
 	}
 	public function choose_language_p($v1)
@@ -286,70 +295,23 @@ class cb_p8_plugin extends cb_p8_core
 		// Check if language was successfully changed and hook to create pages if necessary:
 		if($this->internal['core_return'])
 		{
-			add_action( 'admin_init', array(&$this, 'check_create_pages'));			
+			add_action( 'admin_init', array(&$this, 'check_create_pages'));
 		}
-	}
-	public function check_for_update($checked_data) 
-	{
-			global $wp_version, $plugin_version, $plugin_base;
-		
-			if ( empty( $checked_data->checked ) ) {
-				return $checked_data;
-			}
-
-			if(isset($checked_data->response[$this->internal['plugin_id'].'/index.php']) AND version_compare( $this->internal['version'], $checked_data->response[$this->internal['plugin_id'].'/index.php']->new_version, '<' ))
-			{
-					
-			}
-			return $checked_data;
-		
-	}	
-	public function upgrade_p($v1,$v2)
-	{
-		
-		$upgrader_object = $v1;
-		$options = $v2;
-		$this->opt=get_option($this->internal['prefix'].'options');
-		
-		// The path to our plugin's main file
-		 $our_plugin = $this->internal['plugin_slug'];
-
-		 // If an update has taken place and the updated type is plugins and the plugins element exists
-		if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
-		  // Iterate through the plugins being updated and check if ours is there
-			foreach( $options['plugins'] as $plugin ) {
-	
-				if( $plugin == $our_plugin ) {
-
-				
-				}
-			}
-		}
-		
-		if(!current_user_can('manage_options'))
-		{
-			$this->queue_notice($this->lang['error_operation_failed_no_permission'],'error','error_operation_failed_no_permission','admin');
-			return false;
-		}
-
-
-		
 	}
 	public function do_setup_wizard_p($v1)
 	{
 
-		if($this->opt['quickstart']['site_account']=='Delete this and enter your BitClout/Diamond/DeSo profile link here' OR !$this->opt['setup_done'])
-		{
 			$this->internal['setup_is_being_done']=true;
 			
 			// No setup was done in this install. do setup
 			if(isset($_REQUEST['setup_stage']) AND $_REQUEST['setup_stage']=='0')
 			{
-
+				$this->opt['redirected_to_setup_once'] = true;
+				$this->update_opt();
 				require($this->internal['plugin_path'].'plugin/includes/setup_0.php');
 		
 			}
-			// No setup was done in this install. do setup
+
 			if(isset($_REQUEST['setup_stage']) AND $_REQUEST['setup_stage']=='1')
 			{
 				
@@ -357,8 +319,7 @@ class cb_p8_plugin extends cb_p8_core
 		
 			}
 			return;
-		}
-		
+	
 		// Return left here for future modifications
 		return;
 
@@ -370,7 +331,7 @@ class cb_p8_plugin extends cb_p8_core
 		{	
 			/* Pro upsell
 			echo '<div class="cb_p8_pro_pitch">';
-			echo $this->lang['cb_p8_a1_addon_available_header'];
+			echo esc_html( $this->lang['cb_p8_a1_addon_available_header'] );
 			echo '</div>';
 			*/
 		}
@@ -382,7 +343,7 @@ class cb_p8_plugin extends cb_p8_core
 		echo '<div class="cb_addons_list">';
 		foreach($this->internal['addons'] as $key => $value)
 		{
-			echo $this->display_addon($key);
+			echo  esc_html( $this->display_addon($key) );
 			
 		}
 		echo '</div>';
@@ -398,9 +359,9 @@ class cb_p8_plugin extends cb_p8_core
 		// This function displays a particular addon
 	
 		echo '<div class="cb_addon_listing">';	
-		echo '<div class="cb_addon_icon"><a href="'.$this->internal['addons'][$addon_key]['link'].'" target="_blank"><img src="'.$this->internal['plugin_url'].'images/'.$addon['icon'].'" /></a></div>';echo '<div class="cb_addon_title"><a href="'.$this->internal['addons'][$addon_key]['link'].'" target="_blank">'.$this->lang['addon_'.$addon_key.'_title'].'</a></div>';		
-		echo '<div class="cb_addon_status">'.$this->check_addon_status($addon_key).'</div>';
-		echo '</div>';			
+		echo '<div class="cb_addon_icon"><a href="'.  esc_url( $this->internal['addons'][$addon_key]['link'] ) .'" target="_blank"><img src="'. esc_url( $this->internal['plugin_url'] ).'images/'. esc_html( $addon['icon'] ).'" /></a></div>';echo '<div class="cb_addon_title"><a href="'.esc_url( $this->internal['addons'][$addon_key]['link'] ).'" target="_blank">'. esc_html( $this->lang['addon_'.$addon_key.'_title'] ).'</a></div>';
+		echo '<div class="cb_addon_status">'.  esc_html( $this->check_addon_status($addon_key) ).'</div>';
+		echo '</div>';
 		
 	}
 	public function wrapper_check_addon_license_p($v1)
@@ -420,7 +381,7 @@ class cb_p8_plugin extends cb_p8_core
 		{
 			//plugin is active
 			
-			echo $this->wrapper_check_addon_license($addon_key);
+			echo  esc_html( $this->wrapper_check_addon_license($addon_key) );
 			
 		}
 		else
@@ -491,8 +452,8 @@ class cb_p8_plugin extends cb_p8_core
 							<label for="address"><?php _e('Your BitClout/Diamond/DeSo profile', $this->internal['id']); ?>
 							</label></th>
 							<td>
-								<input type="text" name="<?php echo $this->internal['id'];?>_bitclout_profile" id="<?php echo $this->internal['id'];?>_bitclout_profile" value="<?php echo esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $user->ID ) ); ?>" class="regular-text" /><br />
-									<span class="description"><?php _e('Enter your BitClout/Diamond/DeSo profile link here', $this->internal['id']); ?></span>
+								<input type="text" name="<?php echo  esc_attr( $this->internal['id'] );?>_bitclout_profile" id="<?php echo esc_attr( $this->internal['id'] );?>_bitclout_profile" value="<?php echo esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $user->ID ) ); ?>" class="regular-text" /><br />
+									<span class="description"><?php _e('Enter your BitClout/Diamond/DeSo profile link here', esc_attr( $this->internal['id'] )); ?></span>
 							</td>
 						</tr>
 					</table>
@@ -514,7 +475,7 @@ class cb_p8_plugin extends cb_p8_core
 
 		$user_name = '';
 
-		$profile_url = parse_url($_POST[$this->internal['prefix'].'bitclout_profile']);
+		$profile_url = parse_url( filter_var($_POST[$this->internal['prefix'].'bitclout_profile'], FILTER_SANITIZE_URL ) );
 
 		if ( $profile_url AND isset($profile_url['path']) AND isset($profile_url['host']) ) {
 			$user_name = str_replace('/u/', '', $profile_url['path']);
@@ -531,9 +492,15 @@ class cb_p8_plugin extends cb_p8_core
 			$node_name = 'Diamond';
 		}
 
+		// Reconstruct url without req params
+		if ( $profile_url['host'] != '') {
+			$url = 'https://'. $profile_url['host'] . '/u/' . $user_name;
+		}
 
-		update_user_meta( $user_id, $this->internal['prefix'].'bitclout_profile', $user_name );
+		update_user_meta( $user_id, $this->internal['prefix'].'bitclout_profile', $url );
+		update_user_meta( $user_id, $this->internal['prefix'].'user_name', $user_name );
 		update_user_meta( $user_id, $this->internal['prefix'].'node_name', $node_name );
+		update_user_meta( $user_id, $this->internal['prefix'].'node_url', $profile_url['scheme']. '://' . $profile_url['host'] );
 		update_user_meta( $user_id, $this->internal['prefix'].'node_url', $profile_url['scheme']. '://' . $profile_url['host'] );
 		
 	}
@@ -668,10 +635,17 @@ class cb_p8_plugin extends cb_p8_core
 		$append='<div class="'.$this->internal['prefix'].'bitclout_button" style="text-align:'.$this->opt['post_button']['insert_text_align'].' !important;margin-top:'.$this->opt['post_button']['insert_margin'].';margin-bottom:'.$this->opt['post_button']['insert_margin'].';">';
 			
 
-			
 		if($this->opt['post_button']['show_message_over_post_button']=='yes')
 		{
 			$author_name=get_the_author_meta('display_name');
+			
+
+		$author_id=get_the_author_meta('ID');
+		
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );			
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 
 			if($this->opt['quickstart']['force_site_button']=='yes')
 			{
@@ -679,17 +653,15 @@ class cb_p8_plugin extends cb_p8_core
 			}
 
 			$insert_message=str_replace('{authorname}',$author_name,$this->opt['post_button']['message_over_post_button']);
-			$insert_message=str_replace('{coin}',$author_name,$tinsert_message);
-				
-				
+			$insert_message=str_replace('{coin}',$user_name,$insert_message);
+			$insert_message=str_replace('{node}',$node_name,$insert_message);
+
 			$append.='<div class="'.$this->internal['prefix'].'message_over_post_button" style="font-size:'.$this->opt['post_button']['message_over_post_button_font_size'].';margin-top:'.$this->opt['post_button']['message_over_post_button_margin'].';margin-bottom:'.$this->opt['post_button']['message_over_post_button_margin'].';">'.$insert_message.'</div>';
 				
 			
 		}
-			
+		
 
-		$author_id=get_the_author_meta('ID');
-		$user=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
 		
 		
 		if($this->opt['quickstart']['force_site_button']=='yes' OR $user=='')
@@ -876,196 +848,8 @@ class cb_p8_plugin extends cb_p8_core
 					$button = $this->make_follow_button($author_id,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 					
 				}
-			}					
-
-		}
-		
-	
-		$append.=$button;
-		
-		$append.='</div>';
-
-		return $append;
-		
-	}
-	public function site_goals_sidebar_widget_p($v1)
-	{
-		$content=$v1;
-				
-		//if(in_array('get_the_excerpt', $GLOBALS['wp_current_filter']) OR 'post' !== get_post_type()) $return = $content;
-	
-		global $post;
-		
-		
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		
-		if( !class_exists( 'bitclout_Wordpress' ) ) {
-			if ( current_user_can( 'manage_options' ) ) {
-				$append = '<p>';
-				$append .= $this->lang['pw_install_message_14'];
-				$append .=  '</p>';
-				$append .=  '<p>';
-				$append .=  $this->lang['pw_install_message_12'];
-				$append .=  '</p>';
-				return $append;
 			}
-			else {
-				return '';
-			}
-			
-		}	
-		
-		// If setup needs doing or any access credential is kaput, prompt for setup.
-		
-		// Some convoluted logic. could be handled better
-		if( ( !$this->opt['setup_done'] AND $api_version == '2' ) OR 
-		
-			(	!get_option( 'patreon-client-id', false ) 
-				AND !get_option( 'patreon-client-secret', false ) 
-				AND !get_option( 'patreon-creators-access-token' , false )
-				AND !get_option( 'patreon-creators-refresh-token' , false )
-			) OR 
-			
-			(	get_option( 'patreon-client-id', false ) == ''
-				OR get_option( 'patreon-client-secret', false ) == '' 
-				OR get_option( 'patreon-creators-access-token' , false ) == ''
-				OR get_option( 'patreon-creators-refresh-token' , false ) == ''
-			)
-			
-		) {
-			if ( current_user_can( 'manage_options' ) ) {
-				$append = '<p>';
-				$append .= $this->lang['pw_install_message_13'];
-				$append .=  '</p>';
-				$append .=  '<p>';
-				$append .=  $this->lang['pw_install_message_12'];
-				$append .=  '</p>';
-				return $append;
-			}
-		}
-		
-		$get_url=get_permalink();
-		$append = '';
-		$append .= '<div class="'.$this->internal['prefix'].'bitclout_author_widget" style="text-align:'.$this->opt['sidebar_widgets']['insert_text_align'].' !important;">';
-		
-		
-		$goals = get_option( 'patreon-campaign-goals',  false );
-		$last_updated = get_option( 'patreon-campaign-goals-last-updated',  false );
 
-		$update = false;
-		
-		if ( !$last_updated OR $last_updated <= ( time()-( 60*60*24 ) ) ) {
-			$update = true;
-		}
-
-		if ( !$goals OR $update ) {
-
-			include_once ( $this->internal['plugin_path'] . 'plugin/includes/api_extender.php' );
-			
-			$api_client = new api_extender( get_option( 'patreon-creators-access-token', false ) );
-			// We have to set the token again because the token in parent is private...
-			$api_client->temp_access_token = get_option( 'patreon-creators-access-token', false );
-			$goals = $api_client->fetch_goals();
-
-
-			if ( is_array( $goals ) AND isset( $goals['data'] ) ) {
-				update_option( 'patreon-campaign-goals', $goals );
-				update_option( 'patreon-campaign-goals-last-updated', time() );
-			}
-			
-		}
-
-		$goals = get_option( 'patreon-campaign-goals', false );
-		
-		$no_goals_flag = false;
-		
-		if ( !$goals  OR !is_array( $goals ) OR !isset( $goals['included'][0]['attributes']['amount_cents'] ) ) {
-			$append .= 'There are no goals in this campaign...';
-			$no_goals_flag = true;
-		}
-		
-		$picked_one_goal = false;
-		
-		if ( !$no_goals_flag ) {
-			
-			foreach ( $goals['included'] as $key => $value ) {
-				
-				if ( $goals['included'][$key]['attributes']['completed_percentage'] == '100' ) {
-					continue;
-				}
-				
-				if ( $picked_one_goal ) {
-					continue;
-				}
-				
-				$append .= $goals['included'][$key]['attributes']['title'];
-				$append .= '<br />';
-				$append .= '<div style="font-size:125%;font-weight: bold;">' . $goals['included'][$key]['attributes']['completed_percentage'] .  $this->lang['goal_percent_complete'] . '</div>';
-				$append .= '<br />';
-				$append .= $goals['included'][$key]['attributes']['description'];
-				$append .= '<br />';
-				$append .= '<br />';
-				
-				$picked_one_goal = true;
-			}
-		}
-		
-		if ( !$picked_one_goal AND !$no_goals_flag) {
-			
-			// No goals or goals dont exist.
-			$append .= 'All goals accomplished! Thanks!';
-			
-		}
-		
-		$user=$this->opt['quickstart']['site_account'];
-
-		$url = $this->make_to_bitclout_url( $user, 'goals_widget_button' );	
-
-		if($this->opt['quickstart']['old_button']=='yes')
-		{
-			$button=$this->internal['plugin_url'].'images/'."patreon-medium-button.png";
-			$max_width = '200';
-		}
-		else
-		{
-			
-			$button=$this->internal['plugin_url'].'images/'."become_a_patron_button.png";
-			$max_width = '200';
-			
-		}
-		
-		if($this->opt['quickstart']['custom_button']!='')
-		{
-			$button=$this->opt['quickstart']['custom_button'];
-			if($this->opt['quickstart']['custom_button_width']!='')
-			{
-				$max_width = $this->opt['quickstart']['custom_button_width'];
-				
-			}
-			else
-			{
-				$max_width = '200';
-			}
-			
-		}
-		if($this->opt['quickstart']['open_new_window']=='yes')
-		{
-			$new_window=true;
-		}
-		else
-		{
-			$new_window=false;
-		}
-			
-
-		if($this->opt['quickstart']['force_site_button']=='yes')
-		{
-			$button = $this->make_to_bitclout_link($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
-			
-		}
-		else
-		{
-			$button = $this->make_to_bitclout_link_to_profile($url,$button,$this->opt['sidebar_widgets']['button_margin'],$max_width,$new_window);
 		}
 		
 	
@@ -1079,8 +863,11 @@ class cb_p8_plugin extends cb_p8_core
 	public function author_sidebar_widget_message_p($message) {
 	
 		global $post;
+		
 
-		if($this->opt['quickstart']['force_site_button']=='yes')
+		$author_id=get_the_author_meta('ID');
+
+		if($this->opt['quickstart']['force_site_button']=='yes' OR !$author_id)
 		{
 			$site_name=$bloginfo = get_bloginfo( 'name', 'raw' );
 			$message=str_replace('{authorname}',$site_name,$message);
@@ -1092,43 +879,18 @@ class cb_p8_plugin extends cb_p8_core
 		{
 			$author_name=get_the_author_meta('display_name');
 
-			$author_id=get_the_author_meta('ID');
 		
 			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
 			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
 			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			
 			
 			$message=str_replace('{authorname}',$author_name,$message);
 			$message=str_replace('{node}',$node_name,$message);
-			$message=str_replace('{coin}','$'.$bitclout_profile,$message);
+			$message=str_replace('{coin}','$'.$user_name,$message);
 		}
 		return $message;
-		
-	}
-	public function site_goals_sidebar_widget_message_p($message)
-	{
-	
-		global $post;
-		
-		if( class_exists( 'bitclout_Wordpress' ) ) {
-			
-			if($this->opt['quickstart']['force_site_button']=='yes')
-			{
-				$site_name=$bloginfo = get_bloginfo( 'name', 'raw' );
-				$message=str_replace('{authorname}',$site_name,$message);			
-	
-			}
-			else
-			{
-				$author_name=get_the_author_meta('display_name');
-				$message=str_replace('{authorname}',$author_name,$message);
-			}			
-				
-			return $message;
-		}
-		
-		
 		
 	}
 	
@@ -1185,20 +947,21 @@ class cb_p8_plugin extends cb_p8_core
 		
 		}
 		
-		$buy_url = $this->make_bitclout_buy_url( $author_id, $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
-		$profile_url = $this->make_bitclout_profile_url( $author_id, $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		$buy_url = $this->make_bitclout_buy_url( $author_id, 'dspress_buy_button', 'site_sidebar_widget' );
+		$profile_url = $this->make_bitclout_profile_url( $author_id, 'dspress_buy_button', 'site_sidebar_widget' );
 		
 		if ($author_id) {
 			
 
-			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
 			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			
 		}
 		else {
 			
-			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$bitclout_profile = $this->opt['quickstart']['user_name'];
 			$node_name = $this->opt['quickstart']['node_name'];
 			$node_url = $this->opt['quickstart']['node_url'];
 		}
@@ -1206,7 +969,7 @@ class cb_p8_plugin extends cb_p8_core
 		
 		if($this->opt['quickstart']['custom_button']!='') {
 			
-			return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+			return '<a rel="nofollow"'.$new_window.' href="'.$buy_url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
 			
 		}
 		
@@ -1214,11 +977,11 @@ class cb_p8_plugin extends cb_p8_core
 		$follow_link_message = str_replace('{coin}',''.$bitclout_profile,$this->lang['follow_instead_label']);
 		
 		
-		return '<a rel="nofollow"'.$new_window.' href="'.$buy_url.'/buy"><button class="cb_p8_buy_button" style="background-color: '.$this->opt['quickstart']['button_color'].';color: '.$this->opt['quickstart']['button_text_color'].';margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$buy_button_message.'</button></a><br /><a href="'.$profile_url.'">'.$follow_link_message.'</a>';
+		return '<a rel="nofollow"'.$new_window.' href="'.$buy_url.'/buy"><button class="cb_p8_buy_button" onClick="window.location.href=\''.$buy_url.'\';" style="background-color: '.$this->opt['quickstart']['button_color'].';color: '.$this->opt['quickstart']['button_text_color'].';margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$buy_button_message.'</button></a><br /><a href="'.$profile_url.'">'.$follow_link_message.'</a>';
 		
 		
 	}
-	public function make_follow_button_p($margin=10, $max_width=200, $new_window=false)
+	public function make_follow_button_p($author_id=false, $margin=10, $max_width=200, $new_window=false)
 	{
 		if($new_window)
 		{
@@ -1231,20 +994,39 @@ class cb_p8_plugin extends cb_p8_core
 		
 		}
 		
-		$buy_url = $this->make_bitclout_buy_url( $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
-		$profile_url = $this->make_bitclout_profile_url( $this->opt['quickstart']['site_account'], 'site_sidebar_widget' );
+		$buy_url = $this->make_bitclout_buy_url( $author_id, 'dspress_follow_button', 'site_sidebar_widget' );
+		$profile_url = $this->make_bitclout_profile_url( $author_id, 'dspress_follow_button', 'site_sidebar_widget' );
+		
+
+		if ($author_id) {
+			
+
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
+			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
+		}
+		else {
+			
+			$bitclout_profile = $this->opt['quickstart']['user_name'];
+			$node_name = $this->opt['quickstart']['node_name'];
+			$node_url = $this->opt['quickstart']['node_url'];
+			$user_name = $this->opt['quickstart']['user_name'];
+		}
+		
 		
 		if($this->opt['quickstart']['custom_button']!='') {
 			
-			return '<a rel="nofollow"'.$new_window.' href="'.$url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
+			return '<a rel="nofollow"'.$new_window.' href="'.$profile_url.'"><img style="margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;width:100%;height:auto;" src="'.$button.'"></a>';
 			
-		}
+		}		
+
 		
 		$buy_message = str_replace('{coin}','$'.$this->opt['quickstart']['user_name'],$this->lang['buy_button_label']);
-		$follow_button_message = str_replace('{coin}',''.$this->opt['quickstart']['user_name'],$this->lang['follow_label']);
+		$follow_button_message = str_replace('{coin}',''.$user_name,$this->lang['follow_label']);
 		
 		
-		return '<a rel="nofollow"'.$new_window.' href="'.$profile_url.'"><button class="cb_p8_buy_button" style="background-color: '.$this->opt['quickstart']['button_color'].';color: '.$this->opt['quickstart']['button_text_color'].';margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$follow_button_message.'</button></a><br /><a'.$new_window.' href="'.$buy_url.'">'.$buy_message.'</a>';
+		return '<a rel="nofollow"'.$new_window.' href="'.$profile_url.'"><button class="cb_p8_buy_button" onClick="window.location.href=\''.$profile_url.'\';" style="background-color: '.$this->opt['quickstart']['button_color'].';color: '.$this->opt['quickstart']['button_text_color'].';margin-top: '.$this->opt['sidebar_widgets']['button_margin'].';margin-bottom: '.$this->opt['sidebar_widgets']['button_margin'].';max-width:'.$max_width.'px;">'.$follow_button_message.'</button></a><br /><a'.$new_window.' href="'.$buy_url.'">'.$buy_message.'</a>';
 		
 		
 	}
@@ -1271,14 +1053,15 @@ class cb_p8_plugin extends cb_p8_core
 		if ($author_id) {
 			
 
-			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
 			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			
 		}
 		else {
 			
-			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$bitclout_profile = $this->opt['quickstart']['user_name'];
 			$node_name = $this->opt['quickstart']['node_name'];
 			$node_url = $this->opt['quickstart']['node_url'];
 		}
@@ -1348,39 +1131,25 @@ class cb_p8_plugin extends cb_p8_core
 		if ($author_id) {
 			
 
-			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'bitclout_profile', $author_id ) );
+			$bitclout_profile=esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
 			$node_name=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_name', $author_id ) );
 			$node_url=esc_attr( get_the_author_meta( $this->internal['prefix'].'node_url', $author_id ) );
-			
+			$user_name = esc_attr( get_the_author_meta( $this->internal['prefix'].'user_name', $author_id ) );
+
 		}
 		else {
 			
-			$bitclout_profile = $this->opt['quickstart']['site_account'];
+			$bitclout_profile = $this->opt['quickstart']['user_name'];
 			$node_name = $this->opt['quickstart']['node_name'];
 			$node_url = $this->opt['quickstart']['node_url'];
 		}
 
 		// Lets check if what is saved is an url
-		if(substr($bitclout_profile,0,4)=='http') {
-			// It is! Load the value to url value
-			$url = $bitclout_profile;
-		}
-		else {
-			
-			// Check if an int user id was dropped in
-			if ( is_numeric( $bitclout_profile ) ) {
-				// This is a user name/slug. Make the url :
-				$url = $node_url .'/u/'.$bitclout_profile;
-				
-			}
-			else {
-				// This is a user. Make relevant link.
-				
-				$url = $node_url . '/u/'.$bitclout_profile;
-			}
-			
-		}
+
 		
+		$url = $node_url . '/u/'.$bitclout_profile;
+
+
 		// Add utm params
 
 		$utm_source_url = site_url();
@@ -1444,125 +1213,10 @@ class cb_p8_plugin extends cb_p8_core
 	
 	}
 	// Plugin installer bloc taken from wpreset tutorial https://wpreset.com/programmatically-automatically-download-install-activate-wordpress-plugins/
-	// Installer from Patron Pro not used here since its too elaborate for a simple install operation
-	public function install_pw_p() {
- 
-		if ( !is_admin() OR !current_user_can('manage_options') ) {
-			return;
-		}
-		
-		echo '<div id="cb_p8_admin_message_screen">';
-
-		echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">Installing Patreon WordPress!</h1><div id="cb_p8_admin_message_content">';
-
-		// modify these variables with your new/old plugin values
-		$plugin_slug = 'patreon-connect/patreon.php';
-		$plugin_zip  = 'https://downloads.wordpress.org/plugin/patreon-connect.latest-stable.zip';
-
-		echo $this->lang['pw_install_message_1'];
-		echo $this->lang['pw_install_message_2'];
-		echo $this->lang['pw_install_message_3'];
-
-		include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
-		
-		//includes necessary for Plugin_Upgrader and Plugin_Installer_Skin
-		include_once( ABSPATH . 'wp-admin/includes/file.php' );
-		include_once( ABSPATH . 'wp-admin/includes/misc.php' );
-		include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-		
-		if ( $this->is_plugin_installed( $plugin_slug ) ) {
-			echo $this->lang['pw_install_message_4'];
-			$this->upgrade_plugin( $plugin_slug );
-			$installed = true;
-		} else {
-			echo $this->lang['pw_install_message_5'];
-			$installed = $this->install_plugin( $plugin_zip );
-		}
-
-		if ( !is_wp_error( $installed ) && $installed ) {
-			echo $this->lang['pw_install_message_6'];
-			$activate = activate_plugin( $plugin_slug );
-			 
-			if ( is_null($activate) ) {
-				echo $this->lang['pw_install_message_8'];
-
-				// Check if site is connected
-				
-				// Show a notice if setup was not done
-				$setup_done = get_option( 'patreon-setup-done', false );
-				
-				// Check if this site is a v2 site - temporary until we move to make all installations v2
-				$api_version = get_option( 'patreon-installation-api-version', false );
-				
-				// If setup needs doing or any access credential is kaput, prompt for setup.
-				
-				// Some convoluted logic. could be handled better
-				if( ( !$setup_done AND $api_version == '2' ) OR 
-				
-					(	!get_option( 'patreon-client-id', false ) 
-						AND !get_option( 'patreon-client-secret', false ) 
-						AND !get_option( 'patreon-creators-access-token' , false )
-						AND !get_option( 'patreon-creators-refresh-token' , false )
-					) OR 
-					
-					(	get_option( 'patreon-client-id', false ) == ''
-						OR get_option( 'patreon-client-secret', false ) == '' 
-						OR get_option( 'patreon-creators-access-token' , false ) == ''
-						OR get_option( 'patreon-creators-refresh-token' , false ) == ''
-					)
-					
-				) {
-					echo $this->lang['pw_install_message_10'];
-				}
-				else {
-					// All ok, just redirect to widgets page
-					echo $this->lang['pw_install_message_11'];
-					
-				}				
-			}
-		} else {
-			
-			echo $this->lang['pw_install_message_9'];
-			
-		}
-	  
-		echo '</div></div>';
-		echo '</div>';
-	}
-	   
-	public function is_plugin_installed_p( $slug ) {
-	  if ( ! function_exists( 'get_plugins' ) ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-	  }
-	  $all_plugins = get_plugins();
-	   
-	  if ( !empty( $all_plugins[$slug] ) ) {
-		return true;
-	  } else {
-		return false;
-	  }
-	}
-	 
-	public function install_plugin_p( $plugin_zip ) {
-	  include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-	  wp_cache_flush();
-	   
-	  $upgrader = new Plugin_Upgrader();
-	  $installed = $upgrader->install( $plugin_zip );
-	 
-	  return $installed;
-	}
-	 
-	public function upgrade_plugin_p( $plugin_slug ) {
-	  include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-	  wp_cache_flush();
-	   
-	  $upgrader = new Plugin_Upgrader();
-	  $upgraded = $upgrader->upgrade( $plugin_slug );
-	 
-	  return $upgraded;
-	}
-	// Plugin installer block EOF	
+	// Removed per plugin review of WP repo
+	// Place here any code to install dependencies when an admin triggers & confirms installation
+	
+	// Plugin installer block EOF
 	
     public function admin_message_page_p() {
 		
@@ -1579,10 +1233,10 @@ class cb_p8_plugin extends cb_p8_core
 			$content = $this->lang['admin_message_default_content'];
 			
 			if ( isset( $_REQUEST['cb_p8_admin_message_title'] ) ) {
-				$heading = $this->lang[ $_REQUEST['cb_p8_admin_message_title'] ];
+				$heading = $this->lang[ sanitize_text_field( $_REQUEST['cb_p8_admin_message_title'] ) ];
 			}
 			if ( isset( $_REQUEST['cb_p8_admin_message_content'] ) ) {
-				$content = $this->lang[ $_REQUEST['cb_p8_admin_message_content'] ];
+				$content = $this->lang[  sanitize_text_field( $_REQUEST['cb_p8_admin_message_content'] ) ];
 			}
 			
 			echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">' . $heading . '</h1><div id="cb_p8_admin_message_content">' . $content . '</div></div>';
@@ -1824,6 +1478,58 @@ class cb_p8_plugin extends cb_p8_core
 ';
 
 
+	}
+	public function filter_settings_p($v1)
+	{
+
+		$request = $v1;
+		
+		if ( isset( $request['opt']['quickstart']['site_account'] ) ) {
+			
+			
+			$user_name = '';
+
+			$profile_url = parse_url( filter_var($request['opt']['quickstart']['site_account'], FILTER_SANITIZE_URL ) );
+
+			if ( $profile_url AND isset($profile_url['path']) AND isset($profile_url['host']) ) {
+				$user_name = str_replace('/u/', '', $profile_url['path']);
+			}
+			// Check for any slashes in the name. If there are, then path is wrong
+
+			if ( $user_name == '' OR strpos($user_name,'/') !== false ) {
+
+				// Error!!!
+				$this->opt['last_profile_url_was_incorrect'] = true;
+				$this->update_opt();
+				wp_redirect( admin_url( 'admin.php?page=cb_p8_setup_wizard&setup_stage=0&error=profile_url_not_right') );
+
+				exit;
+			}
+			$this->opt['last_profile_url_was_incorrect'] = false;
+			$this->update_opt();
+			$node_name = $profile_url['host'];
+
+			if ( $profile_url['host']=='bitclout.com') {
+				$node_name = 'BitClout';
+			}
+			if ( $profile_url['host']=='diamondapp.com') {
+				$node_name = 'Diamond';
+			}
+
+				// Reconstruct url without req params
+				if ( $profile_url['host'] != '') {
+					$url = 'https://'. $profile_url['host'] . '/u/' . $user_name;
+				}
+
+				$request['opt']['quickstart']['site_account']=$url;
+				$request['opt']['quickstart']['user_name']=$user_name;
+				$request['opt']['quickstart']['node_name']=$node_name;
+				$request['opt']['quickstart']['node_url']=$profile_url['scheme']. '://' . $profile_url['host'];
+				
+			
+		}
+
+		return $request;
 	}
 
 }

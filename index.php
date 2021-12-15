@@ -1,12 +1,12 @@
 <?php
 /*
-	Plugin Name: DSPress for BitClout, Diamond & DeSo
+	Plugin Name: DSPress
 	Plugin URI: https://wordpress.org/plugins/dspress/
 	Description: Bring BitClout/Diamond/DeSo features including Buy buttons and widgets to your WordPress website. Send your visitors to buy your tokens at your DeSo node. Supports any DeSo node.
-	Version: 1.0.0
+	Version: 1.0.1
 	Author: CodeBard
-	Author URI: http://codebard.com
-	Text Domain: cb_p8
+	Author URI: https://codebard.com
+	Text Domain: dspress
 	Domain Path: /lang
 */
 
@@ -17,7 +17,7 @@ class cb_p8_core {
 
 	protected static $instance = null;
 
-	public $info = array(	
+	public $info = array(
 	
 		// Holds plugin info. Overridden by info from db by merging db info into this
 	
@@ -40,15 +40,15 @@ class cb_p8_core {
 		// We need a few internal vars initialized here 
 		
 		$this->internal['plugin_path']=plugin_dir_path( __FILE__ );	
-		$this->internal['template_path']=$this->internal['plugin_path'].'plugin/templates';	
+		$this->internal['template_path']=$this->internal['plugin_path'].'plugin/templates';
 		$this->internal['start']=microtime(true);
 		$this->internal['plugin_url'] = trailingslashit(plugin_dir_url(__FILE__));
-		$this->internal['template_url']=$this->internal['plugin_url'].'plugin/templates';	
+		$this->internal['template_url']=$this->internal['plugin_url'].'plugin/templates';
 		$this->internal['plugin_slug'] = basename(dirname(__FILE__)).'/index.php';
 		$this->internal['plugin_dir_name'] = basename(dirname(__FILE__));
 		$this->internal['admin_url'] = trailingslashit(get_admin_url());
-		$this->internal['site_url'] = get_site_url();	
-		$this->internal['admin_page_url'] = get_admin_url();	
+		$this->internal['site_url'] = get_site_url();
+		$this->internal['admin_page_url'] = get_admin_url();
 		
 		require_once($this->internal['plugin_path'].'core/includes/default_internal_vars.php');
 		require_once($this->internal['plugin_path'].'plugin/includes/default_internal_vars.php');
@@ -56,13 +56,14 @@ class cb_p8_core {
 		
 		if(isset($_REQUEST[$this->internal['prefix'].'action']))
 		{
-			$this->internal['requested_action'] = $_REQUEST[$this->internal['prefix'].'action'];
+			$this->internal['requested_action'] =   sanitize_text_field( $_REQUEST[$this->internal['prefix'].'action'] );
 		}
 		else
 		{
 			$this->internal['requested_action']=false;
 		}
 		
+
 		$this->plugin_construct();
 		
 		
@@ -77,18 +78,16 @@ class cb_p8_core {
         
         return static::$instance;
     }
-	private function __clone()	{    }
-    private function __wakeup()	{    }
+	private function __clone()  {    }
+    private function __wakeup() {    }
 	public function __call($action,$vars)
 	{
-		
-
 		// Runner Function - checks, processes and runs any action requested and distributes into core and plugin singleton objects in order. This function acts as a front controller. https://en.wikipedia.org/wiki/Front_controller
 		
 		// $this->run('action') method does not work here because you cant pass vars to WordPress' add_action hence you cant pass the action name. So this Runner function has to be magic call.
 		
 		// Normalize the action name
-		$action=str_replace($this->internal['prefix'],'',$action);	
+		$action=str_replace($this->internal['prefix'],'',$action);
 
 		// Map the vars
 
@@ -104,7 +103,7 @@ class cb_p8_core {
 			}
 			else
 			{
-				$$var_name = false;				
+				$$var_name = false;
 			}
 			
 		}
@@ -149,7 +148,7 @@ class cb_p8_core {
 		{
 			if(!isset($this->internal['callcount'][$action]))
 			{
-				$this->internal['callcount'][$action]=0;				
+				$this->internal['callcount'][$action]=0;
 			}
 	
 			
@@ -209,7 +208,7 @@ class cb_p8_core {
 			}
 			
 		}
-	
+
 		// This filter is used to filter variables before they are sent to actions
 		if(has_filter($this->internal['prefix'].'filter_vars_before_'.$action))
 		{
@@ -260,7 +259,7 @@ class cb_p8_core {
 			{	
 				$this->do_log(array('action'=>$action, 'status'=>' CORE START - calling action from core method', 'time' => microtime(true), 'vars' => array($v1,$v2,$v3,$v4,$v5,$v6,$v7,$v8,$v9,$v10)));
 			}
-	
+
 			////////// Here magic happens //////////
 			$return_c = $this->{$action.'_c'}($v1,$v2,$v3,$v4,$v5,$v6,$v7,$v8,$v9,$v10);
 			////////// Magic happened //////////
@@ -348,7 +347,7 @@ class cb_p8_core {
 				}
 			}
 			
-			echo $output;
+			echo esc_html( $output );
 		}
 		
 		// Set internal nobuffer to false before return in case it was given			
@@ -520,12 +519,10 @@ class cb_p8_core {
 		
 		add_action( 'wp_ajax_'.$this->internal['prefix'].'dismiss_admin_notice', array( &$this, 'dismiss_admin_notice' ),10,1 );
 		
-		add_filter( 'pre_set_site_transient_update_plugins', array(&$this, 'check_for_update' ) );
-	
 		if($this->internal['requested_action']!='')
 		{
-			$this->{$this->internal['requested_action']}($_REQUEST);
-		}		
+			$this->{$this->internal['requested_action']}(  $_REQUEST );
+		}
 	
 	}
 	public function create_tables_c()
@@ -682,7 +679,7 @@ PRIMARY KEY  (".$key."_id)
 	
 		if(isset($_REQUEST[$this->internal['prefix'].'tab']))
 		{
-			$tab=$_REQUEST[$this->internal['prefix'].'tab'];
+			$tab=sanitize_text_field( $_REQUEST[$this->internal['prefix'].'tab'] );
 		}
 
 		if(!isset($tab))
@@ -711,7 +708,7 @@ PRIMARY KEY  (".$key."_id)
 			
 			$class = ( $key == $top_tab ) ? ' nav-tab-active' : '';
 			
-			echo '<a class="nav-tab'.$class.'" href="?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab='.$key.'">'.$this->lang['admin_tab_'.$key].'</a>';
+			echo '<a class="nav-tab'. esc_attr( $class ).'" href="?page=settings_'. esc_attr( $this->internal['id'] ).'&'. esc_attr( $this->internal['prefix'] ).'tab='. esc_attr( $key ).'">'. esc_attr( $this->lang['admin_tab_'.$key] ).'</a>';
 
 		}
 
@@ -730,11 +727,11 @@ PRIMARY KEY  (".$key."_id)
 			foreach( $tabs[$top_tab] as $key => $value )
 			{
 					
-				echo '<a href="?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab='.$top_tab.'-'.$key.'">'.$this->lang['admin_tab_'.$top_tab.'_'.$key].'</a>';
+				echo '<a href="?page=settings_'. esc_attr( $this->internal['id'] ).'&'. esc_attr( $this->internal['prefix'] ).'tab='. esc_attr( $top_tab ) .'-'.esc_attr( $key ).'">'.esc_attr( $this->lang['admin_tab_'.$top_tab.'_'.$key] ).'</a>';
 				
 				if($key!=$last)
 				{
-					echo ' | ';				
+					echo ' | ';
 				}
 
 			}	
@@ -755,11 +752,11 @@ PRIMARY KEY  (".$key."_id)
 			
 			foreach( $tabs[$top_tab][$second_level] as $key => $value )
 			{
-				echo '<a href="?page=settings_'.$this->internal['id'].'&'.$this->internal['prefix'].'tab='.$top_tab.'-'.$second_level.'-'.$key.'">'.$this->lang['admin_tab_'.$top_tab.'_'.$second_level.'_'.$key].'</a>';
+				echo '<a href="?page=settings_'. esc_attr( $this->internal['id'] ) .'&'. esc_attr( $this->internal['prefix'] ) .'tab='. esc_attr( $top_tab ).'-'. esc_attr( $second_level ) .'-'. esc_attr( $key ).'">'. esc_attr( $this->lang['admin_tab_'.$top_tab.'_'.$second_level.'_'.$key] ).'</a>';
 				
 				if($key!=$last)
 				{
-					echo ' | ';				
+					echo ' | ';
 				}
 
 			}
@@ -799,7 +796,7 @@ PRIMARY KEY  (".$key."_id)
 	
 		if(isset($_REQUEST[$this->internal['prefix'].'tab']))
 		{
-			$tab=$_REQUEST[$this->internal['prefix'].'tab'];
+			$tab=sanitize_text_field( $_REQUEST[$this->internal['prefix'].'tab'] );
 		}
 		
 		if($tab=='' OR !$tab)
@@ -834,14 +831,13 @@ PRIMARY KEY  (".$key."_id)
 		
 		$admin_settings_page_footer = $this->process_lang($admin_settings_page_footer);	
 
-		echo $admin_settings_page_header;
+		echo html_entity_decode( esc_html( $admin_settings_page_header ));
 		
-		echo $this->do_admin_page_tabs();
+		echo html_entity_decode(esc_html( $this->do_admin_page_tabs() ));
 		
-				
 		$this->do_setting_section($tab);
 		
-		echo $admin_settings_page_footer;
+		echo html_entity_decode(esc_html( $admin_settings_page_footer ) );
 		
 	}
 	public function do_admin_settings_form_header_c()
@@ -853,7 +849,7 @@ PRIMARY KEY  (".$key."_id)
 		
 		if(isset($_REQUEST['tab']))
 		{
-			$tab=$_REQUEST['tab'];
+			$tab= sanitize_text_field( $_REQUEST['tab'] );
 			
 		}
 		else
@@ -861,7 +857,7 @@ PRIMARY KEY  (".$key."_id)
 			$tab='';
 		}
 	
-		$template_vars=array('tab'=>$tab,'referer'=> isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");		
+		$template_vars=array('tab'=>$tab,'referer'=> isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
 
 		$admin_settings_form_header = $this->process_vars_to_template($template_vars, $admin_settings_form_header);
 		
@@ -880,7 +876,7 @@ PRIMARY KEY  (".$key."_id)
 		
 		if(isset($_REQUEST['tab']))
 		{
-			$tab=$_REQUEST['tab'];
+			$tab = sanitize_text_field( $_REQUEST['tab'] );
 			
 		}
 		else
@@ -907,7 +903,7 @@ PRIMARY KEY  (".$key."_id)
 
 		if($this->internal['requested_action']!='')
 		{
-			$this->{$this->internal['requested_action']}($_REQUEST);
+			$this->{$this->internal['requested_action']}(  $_REQUEST );
 		}	
 
 	}
@@ -1008,12 +1004,12 @@ PRIMARY KEY  (".$key."_id)
 			
 			$this->reset_options();
 			
-			return $this->opt;		
+			return $this->opt;
 		}
 		// If options is saved, then override/merge default options with saved one
 		$options = array_replace_recursive
 		(
-			$this->opt, 			
+			$this->opt,
 			get_option($this->internal['prefix'].'options')
 		);	
 		// Assign values to options var so load_plugins_p will be able to use and modify options
@@ -1031,7 +1027,7 @@ PRIMARY KEY  (".$key."_id)
 		foreach($this->internal['log'] as $key => $value)
 		{
 
-			echo $this->internal['log'][$key];
+			echo esc_attr( $this->internal['log'][$key] );
 			echo '<br>';
 
 		}
@@ -1043,7 +1039,7 @@ PRIMARY KEY  (".$key."_id)
 		{
 		
 			
-			wp_die(__('Need admin privileges for this page',$this->internal['id'])); 
+			wp_die(__('Need admin privileges for this page', 'dspress')); 
 		}
 
 	}
@@ -1075,11 +1071,12 @@ PRIMARY KEY  (".$key."_id)
 	}
 	public function save_settings_c($v1)
 	{
-	
+
+
 		$this->require_admin_page();
-		
+
 		$new_options=$v1['opt'];
-		
+
 		$this->opt = array_replace_recursive(
 			
 			$this->opt,
@@ -1087,14 +1084,15 @@ PRIMARY KEY  (".$key."_id)
 			$new_options
 			
 		);
-	
+
 		update_option($this->internal['prefix'].'options' ,$this->opt);
 
 		// Load options from db
 		$this->opt=$this->load_options();
-		
+
 		wp_redirect( $_SERVER['HTTP_REFERER'] );
-		exit();		
+
+		exit();
 		
 	}
 	public function save_settings_during_setup_c($v1)
@@ -1111,7 +1109,7 @@ PRIMARY KEY  (".$key."_id)
 			$new_options
 			
 		);
-	
+
 		update_option($this->internal['prefix'].'options' ,$this->opt);
 
 		// Load options from db
@@ -1788,9 +1786,9 @@ PRIMARY KEY  (".$key."_id)
 			$this->internal['content']['perma_notices']=$this->opt['content']['perma_notices'];
 		}
 		 
-		echo $this->prepare_notices('perma','admin');
-		echo $this->prepare_notices('admin','admin');
-	
+		echo html_entity_decode( esc_html( $this->prepare_notices('perma','admin') ) );
+		echo html_entity_decode( esc_html( $this->prepare_notices('admin','admin') ) );
+
 	}
 	public function queue_content_c($v1,$v2,$v3,$v4)
 	{
@@ -1896,7 +1894,7 @@ PRIMARY KEY  (".$key."_id)
 	{
 		// Does nothing but wrap update_options for options:
 		
-		return update_option($this->internal['prefix'].'options',$this->opt);		
+		return update_option($this->internal['prefix'].'options',$this->opt);
 
 		
 	}	

@@ -26,7 +26,7 @@ $this->internal = array_replace_recursive(
 			'ignore the ones after this line they were allowed for development!' => 1,
 			
 		),
-			
+		
 		
 		'do_log' => false,
 		

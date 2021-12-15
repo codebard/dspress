@@ -62,9 +62,11 @@ $this->opt = array_replace_recursive(
 		'send_ticket_update_email_notification_to_staff'=> 'yes',
 
 		'setup_done' => false,
+		'redirected_to_setup_once' => false,
 		'pro_pitch_done' => false,
 		'setup_being_done' => false,
 		'pro_pitch_being_done' => false,
+		'last_profile_url_was_incorrect' => false,
 		
 
 )
