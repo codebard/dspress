@@ -1,6 +1,6 @@
 <?php
 
-$tab = esc_attr( $_REQUEST[$this->internal['prefix'].'tab'] );
+$tab = sanitize_key( $_REQUEST[$this->internal['prefix'].'tab'] );
 
 
 echo $this->do_admin_settings_form_header($tab);
@@ -100,7 +100,7 @@ echo $this->do_admin_settings_form_header($tab);
 ?>
 			<h3>Site's BitClout / Diamond / DeSo Node profile</h3>
 			If you chose not to use profile of Authors for each author, or an Author does not have any profile saved in his/her author profile page, this profile will be used for Buttons for users in any single post. This affects both the <b>Buttons under Posts</b>, and the <b>Author sidebar widget</b>. When updating this field, you must put in your BitClout/Diamond/DESO profile link instead of just profile name / nickname.<br><br>
-			<input type="text" style="width : 500px" name="opt[<?php echo esc_attr( $tab ); ?>][site_account]" value="<?php echo esc_html( $this->opt[$tab]['site_account'] ); ?>"><br><br>
+			<input type="text" style="width : 500px" name="opt[<?php echo sanitize_key( $tab ); ?>][site_account]" value="<?php echo sanitize_url( $this->opt[$tab]['site_account'] ); ?>"><br><br>
 			
 			<h3>Button background color</h3>
 			The background color of buttons used in widgets and call to actions. The default color is 'DeSo blue'. But if this doesn't suit your site, pick a new color that does. Just click inside the input box below and a color picker will appear.<br><br>

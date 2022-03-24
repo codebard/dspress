@@ -3,7 +3,7 @@
 $tab = sanitize_text_field( $_REQUEST[$this->internal['prefix'].'tab'] );
 
 
-echo html_entity_decode( esc_html( $this->do_admin_settings_form_header($tab) ) );
+echo html_entity_decode( $this->do_admin_settings_form_header(sanitize_key($tab)) );
 
 		$show_button_under_posts_checked_yes = '';
 		$show_button_under_posts_checked_no = '';
@@ -83,54 +83,54 @@ echo html_entity_decode( esc_html( $this->do_admin_settings_form_header($tab) ) 
 			<hr>
 			
 			<h3>Show Button under Posts</h3>		
-			Yes <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][show_button_under_posts]" value="yes"<?php echo esc_html( $show_button_under_posts_checked_yes ); ?>>
-			No <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][show_button_under_posts]" value="no"<?php echo esc_html($show_button_under_posts_checked_no ); ?>>
+			Yes <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][show_button_under_posts]" value="yes"<?php echo esc_html( $show_button_under_posts_checked_yes ); ?>>
+			No <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][show_button_under_posts]" value="no"<?php echo esc_html($show_button_under_posts_checked_no ); ?>>
 						
 			
 			<h3>Button In Post Appearance Order</h3>
 			In case the Buttons under Posts are not appearing in the order you would like them, change this number to a lower or higher number to move them up or down in order of appearance. For example, if the button is appearing under your Social Share buttons at the end of your post and you want to move it higher, lower the number.<br><br>
-			<input type="text" name="opt[<?php echo esc_attr( $tab ); ?>][append_to_content_order]" value="<?php echo esc_html($this->opt[$tab]['append_to_content_order'] ); ?>">
+			<input type="text" name="opt[<?php echo sanitize_key( $tab ); ?>][append_to_content_order]" value="<?php echo esc_html($this->opt[$tab]['append_to_content_order'] ); ?>">
 			
 			<h3>Show a message over Buttons in Posts</h3>	
 			If you set "Yes" a message will be shown above buttons inside posts. The message can be customized below.<br><br>
-			Yes <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][show_message_over_post_button]" value="yes"<?php echo esc_html( $show_message_over_post_button_checked_yes ); ?>>
-			No <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][show_message_over_post_button]" value="no"<?php echo esc_html($show_message_over_post_button_checked_no ); ?>>
+			Yes <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][show_message_over_post_button]" value="yes"<?php echo esc_html( $show_message_over_post_button_checked_yes ); ?>>
+			No <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][show_message_over_post_button]" value="no"<?php echo esc_html($show_message_over_post_button_checked_no ); ?>>
 			
 			<h3>Alignment of Message text And Button under Posts</h3>
 			You can align the message over buttons left, center, or right.		
 			<br><br>
-			Left <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][insert_text_align]" value="left"<?php echo esc_html( $post_insert_text_align_checked_left ); ?>>
-			Center <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][insert_text_align]" value="center"<?php echo esc_html( $post_insert_text_align_checked_center ); ?>>
-			Right <input type="radio" name="opt[<?php echo esc_attr( $tab ); ?>][insert_text_align]" value="right"<?php echo esc_html( $post_insert_text_align_checked_right ); ?>>
+			Left <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][insert_text_align]" value="left"<?php echo esc_html( $post_insert_text_align_checked_left ); ?>>
+			Center <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][insert_text_align]" value="center"<?php echo esc_html( $post_insert_text_align_checked_center ); ?>>
+			Right <input type="radio" name="opt[<?php echo sanitize_key( $tab ); ?>][insert_text_align]" value="right"<?php echo esc_html( $post_insert_text_align_checked_right ); ?>>
 
 			
 			<h3>Top and Bottom Margin for Buy Button and Text inside post</h3>
 			This decides the distance from top and down will the Buy button to the rest of your post content.<br><br>
-			<input type="text" name="opt[<?php echo esc_attr( $tab ); ?>][insert_margin]" value="<?php echo esc_html( $this->opt[$tab]['insert_margin'] ); ?>">
+			<input type="text" name="opt[<?php echo sanitize_key( $tab ); ?>][insert_margin]" value="<?php echo esc_html( $this->opt[$tab]['insert_margin'] ); ?>">
 			
 			<h3>Message over Buttons in Posts</h3>
 			If the above is set to yes, this is the message that will appear over buttons inside posts. {authorname} is a placeholder you can use in the message. It will automatically be replaced by Author's display name.<br><br>
-			<input type="text" style="width : 500px;" name="opt[<?php echo esc_attr( $tab ); ?>][message_over_post_button]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button'] ); ?>">
+			<input type="text" style="width : 500px;" name="opt[<?php echo sanitize_key( $tab ); ?>][message_over_post_button]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button'] ); ?>">
 					
 			<h3>Message over Buttons Font Size</h3>
 			You can adjust the size of the message over buttons with the below value. px, %, pt accepted.<br><br>
-			<input type="text" name="opt[<?php echo esc_attr( $tab ); ?>][message_over_post_button_font_size]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button_font_size'] ); ?>">
+			<input type="text" name="opt[<?php echo sanitize_key( $tab ); ?>][message_over_post_button_font_size]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button_font_size'] ); ?>">
 			
 			<h3>Message over Button Top and Bottom Margin</h3>
 			This allows you to change the margin above and under the text message over the button to change distance of text from button below.<br><br>
-			<input type="text" name="opt[<?php echo esc_attr( $tab ); ?>][message_over_post_button_margin]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button_margin'] ); ?>">
+			<input type="text" name="opt[<?php echo sanitize_key( $tab ); ?>][message_over_post_button_margin]" value="<?php echo esc_html( $this->opt[$tab]['message_over_post_button_margin'] ); ?>">
 			
 			<h3>Button Top and Bottom Margin</h3>
 			You can change the margin of the Button independently from the above margin, in case you need it.<br><br>
-			<input type="text" name="opt[<?php echo esc_attr( $tab ); ?>][button_margin]" value="<?php echo esc_html( $this->opt[$tab]['button_margin'] ); ?>">
+			<input type="text" name="opt[<?php echo sanitize_key( $tab ); ?>][button_margin]" value="<?php echo esc_html( $this->opt[$tab]['button_margin'] ); ?>">
 
 			
 
 <?php
 
 
-$this->do_setting_section_additional_settings( esc_attr( $tab ));
+$this->do_setting_section_additional_settings( sanitize_key( $tab ));
 
-echo $this->do_admin_settings_form_footer( esc_attr( $tab ));
+echo $this->do_admin_settings_form_footer( sanitize_key( $tab ));
 
 ?>

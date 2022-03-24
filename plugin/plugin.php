@@ -1,7 +1,7 @@
 <?php
 
 
-class cb_p8_plugin extends cb_p8_core
+class codebard_p8_plugin extends codebard_p8_core
 {
 	public function plugin_construct()
 	{
@@ -358,7 +358,7 @@ class cb_p8_plugin extends cb_p8_core
 		
 		// This function displays a particular addon
 	
-		echo '<div class="cb_addon_listing">';	
+		echo '<div class="cb_addon_listing">';
 		echo '<div class="cb_addon_icon"><a href="'.  esc_url( $this->internal['addons'][$addon_key]['link'] ) .'" target="_blank"><img src="'. esc_url( $this->internal['plugin_url'] ).'images/'. esc_html( $addon['icon'] ).'" /></a></div>';echo '<div class="cb_addon_title"><a href="'.esc_url( $this->internal['addons'][$addon_key]['link'] ).'" target="_blank">'. esc_html( $this->lang['addon_'.$addon_key.'_title'] ).'</a></div>';
 		echo '<div class="cb_addon_status">'.  esc_html( $this->check_addon_status($addon_key) ).'</div>';
 		echo '</div>';
@@ -1239,7 +1239,7 @@ class cb_p8_plugin extends cb_p8_core
 				$content = $this->lang[  sanitize_text_field( $_REQUEST['cb_p8_admin_message_content'] ) ];
 			}
 			
-			echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">' . $heading . '</h1><div id="cb_p8_admin_message_content">' . $content . '</div></div>';
+			echo '<div id="cb_p8_admin_message_page"><h1 style="margin-top: 0px;">' . esc_html($heading) . '</h1><div id="cb_p8_admin_message_content">' . esc_html($content) . '</div></div>';
 		
 			echo '</div>';
 		
@@ -1471,7 +1471,7 @@ class cb_p8_plugin extends cb_p8_core
 	<style>
 	.cb_p8_buy_button:hover {
 		
-		background-color: '. $this->opt['quickstart']['button_hover_color'].' !important;
+		background-color: '. esc_html($this->opt['quickstart']['button_hover_color']).' !important;
 	}
 	</style>
 
@@ -1534,13 +1534,13 @@ class cb_p8_plugin extends cb_p8_core
 
 }
 
-$cb_p8 = cb_p8_plugin::get_instance();
+$codebard_p8 = codebard_p8_plugin::get_instance();
 
-function cb_p8_get()
+function codebard_p8_get()
 {
 
 	// This function allows any plugin to easily retieve this plugin object
-	return cb_p8_plugin::get_instance();
+	return codebard_p8_plugin::get_instance();
 
 }
 

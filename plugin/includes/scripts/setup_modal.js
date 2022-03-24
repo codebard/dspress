@@ -1,5 +1,5 @@
  jQuery(document).ready(function(){
-      jQuery('#cb_p6_setup_modal').dialog({
+      jQuery('#cb_p8_setup_modal').dialog({
 		      title: 'Let\'s get started',
 			      dialogClass: 'wp-dialog',
            autoOpen: true, //FALSE if you open the dialog with, for example, a button click

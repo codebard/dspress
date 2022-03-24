@@ -6,8 +6,8 @@ Donate link: http://codebard.com/donate
 Tags: bitclout, diamond, deso, crypto, blockchain
 License: GPL
 Requires at least: 4.0
-Tested up to: 5.8
-Stable Tag: 1.0.1
+Tested up to: 5.9
+Stable Tag: 1.0.2
 
 DSPress brings BitClout, Diamond and DeSo features to your WordPress site.
 
@@ -51,11 +51,27 @@ To be updated
 
 == Upgrade Notice ==
 
+= 1.0.2 =
+
+* Minor security fixes
+
+= 1.0.1 =
+
+* Minor security fixes
+
 = 1.0.0 =
 
 * Initial release!
 
 == Changelog ==
+
+= 1.0.2 =
+
+* Minor security fixes
+
+= 1.0.1 =
+
+* Minor security fixes
 
 = 1.0.0 =
 

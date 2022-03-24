@@ -3,7 +3,7 @@
 	Plugin Name: DSPress
 	Plugin URI: https://wordpress.org/plugins/dspress/
 	Description: Bring BitClout/Diamond/DeSo features including Buy buttons and widgets to your WordPress website. Send your visitors to buy your tokens at your DeSo node. Supports any DeSo node.
-	Version: 1.0.1
+	Version: 1.0.2
 	Author: CodeBard
 	Author URI: https://codebard.com
 	Text Domain: dspress
@@ -13,7 +13,7 @@
 
 
 
-class cb_p8_core {
+class codebard_p8_core {
 
 	protected static $instance = null;
 
@@ -927,7 +927,7 @@ PRIMARY KEY  (".$key."_id)
 		
 		// Load options from db
 		$this->opt = $this->load_options();
-		
+
 		// Load language from db
 		$this->lang = $this->load_language();
 		
@@ -1611,7 +1611,7 @@ PRIMARY KEY  (".$key."_id)
 		{
 			$lang = 'en-US';			
 		}		
-		
+
 		$lang_file = $this->internal['plugin_path'].'plugin/includes/languages/'.$lang.'.php';
 		
 		if( ! file_exists( $lang_file ) )
@@ -2112,7 +2112,7 @@ PRIMARY KEY  (".$key."_id)
 	public function do_admin_language_selector_c($v1)
 	{
 		$selected_lang=$v1;
-		
+
 		global $wpdb;
 		// Read all existing languages in db 
 		
@@ -2155,7 +2155,7 @@ PRIMARY KEY  (".$key."_id)
 		}
 		
 		// Remove _custom from sent language id if it exists:
-		
+
 		$request[$this->internal['prefix'].'lang']=str_replace('_custom','',$request[$this->internal['prefix'].'lang']);
 
 		
@@ -2229,8 +2229,8 @@ PRIMARY KEY  (".$key."_id)
 		}		
 	
 		$this->opt['lang']=$language;
-		
-		
+
+
 		$updated = update_option($this->internal['prefix'].'options' ,$this->opt);
 		
 		if($updated)
@@ -3807,9 +3807,9 @@ PRIMARY KEY  (".$key."_id)
 
 require('plugin/plugin.php');
 
-register_activation_hook($cb_p8->internal['plugin_path'].'index.php',array(&$cb_p8,'activate'));
+register_activation_hook($codebard_p8->internal['plugin_path'].'index.php',array(&$codebard_p8,'activate'));
 
-register_deactivation_hook( $cb_p8->internal['plugin_path'].'index.php', array(&$cb_p8,'deactivate'));
+register_deactivation_hook( $codebard_p8->internal['plugin_path'].'index.php', array(&$codebard_p8,'deactivate'));
 
 
 require('plugin/includes/direct_includes.php');

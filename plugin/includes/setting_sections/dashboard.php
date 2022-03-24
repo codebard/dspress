@@ -32,7 +32,7 @@
 
 		<div class="cb_p8_setup_wizard_col_33" style="text-align : center;">
 		
-			<a href="<?php echo $this->lang['tell_your_friends_tweet']; ?>" target="_blank"><?php echo $this->lang['tell_your_friends'] ; ?></a>
+			<a href="<?php echo esc_url($this->lang['tell_your_friends_tweet']); ?>" target="_blank"><?php echo esc_html($this->lang['tell_your_friends']); ?></a>
 			<br><br>
 	
 		</div>

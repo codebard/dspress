@@ -1,5 +1,5 @@
  jQuery(document).ready(function(){
-      jQuery('#cb_p6_pro_pitch_modal').dialog({
+      jQuery('#cb_p8_pro_pitch_modal').dialog({
 		      title: 'Upgrade!',
 			      dialogClass: 'wp-dialog',
            autoOpen: true, //FALSE if you open the dialog with, for example, a button click
